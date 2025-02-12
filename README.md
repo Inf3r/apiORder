@@ -3,7 +3,7 @@
 <p align="center">
 <sub>Todo</sub> sobre <sup>HTTP</sup>./... desde la perspectiva de un buen barco, con algo de Ron y un parche.
 </p>
-ASD
+
 <br>
 <br>
 <br>
@@ -41,7 +41,7 @@ La extensibilidad de HTTP facilitó la creación de nuevos encabezados y método
   
 >Semántica HTTP:
 
-[1 ( RFC 9110 )](https://datatracker.ietf.org/doc/html/rfc9110)
+[1 ( RFC 9110 )](https://github.com/Inf3r/apiORder/blob/a2510ebc69975b361c70023a511dbb8b1bccf419/README.md)
 
 >Almacenamiento en Caché:
 
