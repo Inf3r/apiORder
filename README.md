@@ -47,18 +47,16 @@ La extensibilidad de HTTP facilitó la creación de nuevos encabezados y método
 
 [2 ( RFC 9111 )](https://www.rfc-editor.org/rfc/rfc9111)
 
->el cual se aplica a todas las versiones de HTTP:
+>el cual se aplica a todas las versiones de HTTP...
 
->HTTP/1.1
+>HTTP/1.1:
 
 [3 ( RFC 9112 )](https://www.rfc-editor.org/rfc/rfc9112)
 
->HTTP/2
+>HTTP/2:
 
 [4 ( RFC 9113 )](https://www.rfc-editor.org/rfc/rfc9113)
 
->y
-
->HTTP/3
+>y HTTP/3:
 
 [5 ( RFC 9114 )](https://www.rfc-editor.org/rfc/rfc9114)
