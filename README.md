@@ -41,7 +41,7 @@ La extensibilidad de HTTP facilitó la creación de nuevos encabezados y método
   
 >Semántica HTTP:
 
-[1 ( RFC 9110 )](https://github.com/Inf3r/apiORder/blob/14184c45817e6d8a220b8ea550afb49ab1eb65f4/README.md)
+[1 ( RFC 9110 )](https://github.com/Inf3r/apiORder/tree/RFC9110)
 
 >Almacenamiento en Caché:
 
