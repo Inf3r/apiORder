@@ -1,7 +1,7 @@
 ># api+OR+der
 
 <p align="center">
-<sub>Todo</sub> sobre <sup>HTTP</sup>./... desde la perspectiva de un buen barco, con algo de Ron y un parche.
+<sub>Todo</sub> sobre <sup>HTTP</sup>./... desde la perspectiva de un buen barco, con algo de ron y un parche.
 </p>
 
 <br>
