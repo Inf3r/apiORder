@@ -98,9 +98,9 @@ El término "servidor de origen" se refiere a un programa que puede generar resp
 La mayor parte de la comunicación HTTP consiste en una solicitud de recuperación (GET) para una representación de algún recurso identificado por un URI. En el caso más simple, esto podría lograrse mediante una única conexión bidireccional (===) entre el agente de usuario (UA) y el servidor de origen (O).
 
 <p align="center">
-Solicitud   >
-UA ================================ O
-                        <   Respuesta
+         Solicitud   >
+    UA ======================================= O
+                                <   Respuesta
 </p>
 
 asd
