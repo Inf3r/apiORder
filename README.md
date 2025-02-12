@@ -1,7 +1,7 @@
 ># api+OR+der
 
 <p align="center">
-<sub>Todo</sub> sobre <sup>HTTP</sup>./... desde la perspectiva de un buen barco, con algo de Ron y un parche.
+<sub>Todo</sub> sobre <sup>HTTP</sup>./... desde la perspectiva de un buen barco, con algo de ron y un parche.
 </p>
 
 <br>
@@ -62,5 +62,3 @@ La extensibilidad de HTTP facilitó la creación de nuevos encabezados y método
 >HTTP/3
 
 [5 ( RFC 9114 )](https://www.rfc-editor.org/rfc/rfc9114)
-
-[test](https://github.com/Inf3r/apiORder/blob/a7e1627d6481cac4cef57857eecf9619049382c5/README.md)
