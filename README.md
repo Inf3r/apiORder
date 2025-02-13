@@ -207,3 +207,6 @@ Se define una regla de "ruta absoluta" para los elementos de protocolo que puede
   partial-URI   = relative-part [ "?" query ]
 ```
 
+Cada elemento de protocolo en HTTP que permite una referencia URI indicará en su producción ABNF si el elemento permite cualquier forma de referencia (URI-reference), solo una URI en forma absoluta (absolute-URI), solo la ruta y los componentes de consulta opcionales (partial-URI), o alguna combinación de lo anterior. A menos que se indique lo contrario, las referencias URI se analizan en relación con la URI de destino (Sección 7.1).¶
+
+SE RECOMIENDA que todos los remitentes y destinatarios admitan, como mínimo, URI con longitudes de 8000 octetos en elementos de protocolo. Tenga en cuenta que esto implica que algunas estructuras y representaciones on-wire (por ejemplo, la línea de solicitud en HTTP/1.1) serán necesariamente más grandes en algunos casos.¶
