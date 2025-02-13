@@ -166,9 +166,11 @@ GET /hello.txt HTTP/1.1
 User-Agent: curl/7.64.1
 Host: www.example.com
 Accept-Language: en, mi, ar
+```
 
-Server response:
+Respuesta de servidor:
 
+```
 HTTP/1.1 200 OK
 Date: Mon, 27 Jul 2009 12:28:53 GMT
 Server: Apache
@@ -181,3 +183,4 @@ Content-Type: text/plain
 
 Hello World! My content includes a trailing CRLF.
 ```
+
