@@ -13,7 +13,7 @@
 
 >Fuente [WIKIPEDIA.ORG:](https://es.wikipedia.org/wiki/Request_for_Comments)
 
-Las RFC (Request For Comments) son una serie de publicaciones del grupo de trabajo de ingeniería de Internet, (IETF) (el consorcio de colaboración técnica más importante de la Red), que describen diversos aspectos del funcionamiento de Internet y otras redes de computadoras, como protocolos, procedimientos, mejoras, etc, junto con comentarios e ideas sobre estos. Cada RFC constituye un monográfico o memorando histórico, que ingenieros y/o expertos en la materia hicieron llegar al IETF, para que este sea valorado por el resto de la comunidad.
+Las RFC (Request For Comments) son una serie de publicaciones del grupo de trabajo de ingeniería de Internet, (IETF) (el consorcio de colaboración técnica más importante de la red), que describen diversos aspectos del funcionamiento de Internet y otras redes de computadoras, como protocolos, procedimientos, mejoras, etc, junto con comentarios e ideas sobre estos. Cada RFC constituye un monográfico o memorando histórico, que ingenieros y/o expertos en la materia hicieron llegar al IETF, para que este sea valorado por el resto de la comunidad.
 
 >Fuente [IBM.COM:](https://www.ibm.com/docs/es/cics-ts/6.x?topic=concepts-http-protocol)
 
