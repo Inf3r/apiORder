@@ -193,23 +193,34 @@ Las definiciones de "URI-reference", "absolute-URI", "relative-part", "authority
 Se define una regla de "ruta absoluta" para los elementos de protocolo que pueden contener un componente de ruta no vacío. Se define una regla de "URI parcial" para los elementos de protocolo que pueden contener una URI relativa pero no un componente de fragmento.
 
 ```
-  URI-reference = URI-reference
-  absolute-URI  = absolute-URI
-  relative-part = relative-part
-  authority     = authority
-  uri-host      = host
-  port          = port
-  path-abempty  = path-abempty
-  segment       = segment
-  query         = query
+URI-reference = URI-reference
+absolute-URI  = absolute-URI
+relative-part = relative-part
+authority     = authority
+uri-host      = host
+port          = port
+path-abempty  = path-abempty
+segment       = segment
+query         = query
 
-  absolute-path = 1*( "/" segment )
-  partial-URI   = relative-part [ "?" query ]
+absolute-path = 1*( "/" segment )
+partial-URI   = relative-part [ "?" query ]
 ```
 
 Cada elemento de protocolo en HTTP, que permite una referencia URI, indicará en su producción **(*)ABNF** si el elemento permite cualquier forma de referencia (URI-reference), solo una URI en forma absoluta (absolute-URI), solo la ruta y los componentes de consulta opcionales (partial-URI), o alguna combinación de lo anterior. A menos que se indique lo contrario, las referencias URI se analizan en relación con la URI de destino.
 
 Se recomienda que todos los remitentes y destinatarios admitan, como mínimo, URI con longitudes de 8000 octetos en elementos de protocolo. Tener en cuenta que esto implica que algunas estructuras y representaciones on-wire (por ejemplo, la línea de solicitud en HTTP/1.1) serán necesariamente más grandes en algunos casos.
 
-**(*)ABNF**
+**(*)ABNF:**
+
+En informática, la "Forma Backus-Naur Aumentada" (ABNF) es un metalenguaje basado en la forma Backus–Naur (BNF) pero que consta de su propia sintaxis y reglas de derivación. El principio motriz de la ABNF es describir un sistema formal de un lenguaje que se utilizará como protocolo de comunicaciones bidireccional.
+
+Una especificación ABNF es un conjunto de reglas de derivación, escritas como:
+
+```
+rule = definition; comment CR
+LF
+```
+
+Donde **rule** es una no-terminal que no distingue entre mayúsculas y minúsculas, **definition** consta de secuencias de símbolos que definen la regla, un **comment** para la documentación, y finaliza con un retorno de carro (CR) y un salto de línea (LF).
 
