@@ -27,7 +27,7 @@ HTTP oculta los detalles de cómo se implementa un servicio al presentar una int
 
 HTTP también está diseñado para usarse como protocolo de intermediación, en donde los servidores proxy y las pasarelas pueden traducir sistemas de información que no sean HTTP a una interfaz más genérica.
 
-HTTP ha sido el principal protocolo de transferencia de información para la World Wide Web desde su introducción en 1990. Comenzó como un mecanismo trivial para solicitudes de baja latencia, con un único método (GET) para solicitar la transferencia de un supuesto documento de hipertexto identificado por una ruta determinada. La primer versión no tenía número específico, por lo que se la diferenció de las demas (de la segunda mejora llamada HTTP/1.0) con 0.9, uno por debajo. A medida que la Web creció, HTTP se amplió para incluir solicitudes y respuestas dentro de mensajes, transferir formatos de datos arbitrarios utilizando tipos de medios similares a MIME y enrutar solicitudes a través de intermediarios.
+HTTP ha sido el principal protocolo de transferencia de información para la World Wide Web desde su introducción en 1990. Comenzó como un mecanismo trivial para solicitudes de baja latencia, con un único método (GET) para solicitar la transferencia de un supuesto documento de hipertexto identificado por una ruta determinada. La primer versión no tenía número específico, por lo que se la diferenció de las demas (de la segunda mejora llamada HTTP/1.0) con 0.9, uno por debajo. 
 
 En los viejos tiempos, los problemas de interoperabilidad eran habituales. En un esfuerzo por resolverlos, en noviembre de 1996, se publicó un documento informativo que describía las prácticas comunes, conocido como RFC 1945, en el que se definía el HTTP/1.0.
 
