@@ -248,3 +248,44 @@ Por otro lado, los cuadros de diálogo, cuadros de texto y otros elementos de vi
 
 Dado que realmente no hay ninguna desventaja en enviar ambos, y ambos son necesarios en algunas situaciones y contextos, la política más simple es usar los dos.
 
+En el caso del texto literal, se especifica mediante el uso de una cadena entre comillas (""). Estas cadenas no distinguen entre mayúsculas y minúsculas, y el conjunto de caracteres utilizado es (US-)ASCII. Por lo tanto, la cadena "abc" coincidirá con “abc”, “Abc”, “aBc”, “abC”, “ABc”, “AbC”, “aBC” y “ABC”. 
+
+El RFC 7405 agregó una sintaxis para cadenas que distinguen entre mayúsculas y minúsculas: **%s**"aBc", por lo que en este caso, solo coincidirá con "aBc". 
+
+Antes de esa implementación, una cadena que distinguía entre mayúsculas y minúsculas solo se podía especificar enumerando los caracteres individuales: por ejemplo para que coincida con “aBc”, la definición sería %d97.66.99. 
+
+Una cadena también se puede especificar explícitamente como no distinguible entre mayúsculas y minúsculas con el prefijo **%i**.
+
+El espacio en blanco se utiliza para separar elementos de una definición; para que el espacio se reconozca como delimitador, debe incluirse explícitamente. La referencia explícita para un solo carácter de espacio en blanco es WSP (espacio en blanco lineal), y LWSP es para cero o más caracteres de espacio en blanco con saltos de línea permitidos. Se necesita al menos un carácter de espacio en blanco para formar un delimitador entre dos campos.
+
+Las definiciones están alineadas a la izquierda. Cuando se requieren varias líneas (para facilitar la lectura), las líneas de continuación se sangran con espacios en blanco.
+
+**; Comentario**
+
+Un punto y coma (;) inicia un comentario que continúa hasta el final de la línea.
+
+**Concatenación**
+
+*Rule1 Rule2*
+
+Una regla se puede definir enumerando una secuencia de nombres de reglas.
+
+Para hacer coincidir la cadena “aba”, se pueden utilizar las siguientes reglas:
+
+```
+fu     = %x61	; a
+bar    = %x62	; b
+mumble = fu bar fu
+```
+
+**Concatenación alternativa**
+
+*Rule1 / Rule2*
+
+Una regla puede definirse mediante una lista de reglas alternativas separadas por una barra (/).
+
+Para aceptar la regla fu o la regla bar, se podría construir la siguiente regla:
+
+fubar = fu / bar
+
+Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
