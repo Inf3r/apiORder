@@ -184,3 +184,26 @@ Content-Type: text/plain
 Hello World! My content includes a trailing CRLF.
 ```
 
+>Referencias URI
+
+Las referencias URI se utilizan para dirigir solicitudes, indicar redirecciones y definir relaciones.
+
+Las definiciones de "URI-reference", "absolute-URI", "relative-part", "authority", "port", "host", "path-abempty", "segment" y "query" se adoptan de la sintaxis genérica de URI.
+
+Se define una regla de "ruta absoluta" para los elementos de protocolo que pueden contener un componente de ruta no vacío. Se define una regla de "URI parcial" para los elementos de protocolo que pueden contener una URI relativa pero no un componente de fragmento.
+
+```
+  URI-reference = URI-reference
+  absolute-URI  = absolute-URI
+  relative-part = relative-part
+  authority     = authority,
+  uri-host      = host
+  port          = port
+  path-abempty  = path-abempty
+  segment       = segment
+  query         = query
+
+  absolute-path = 1*( "/" segment )
+  partial-URI   = relative-part [ "?" query ]
+```
+
