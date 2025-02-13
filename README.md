@@ -224,3 +224,23 @@ LF
 
 Donde **rule** es una no-terminal que no distingue entre mayúsculas y minúsculas, **definition** consta de secuencias de símbolos que definen la regla, un **comment** para la documentación, y finaliza con un retorno de carro (CR) y un salto de línea (LF).
 
+Los nombres de **rule** no distinguen entre mayúsculas y minúsculas: <rulename>, <Rulename>, <RULENAME> y <rUlENamE> hacen referencia a la misma regla. Los nombres de las reglas constan de una letra seguida de letras, números y guiones. Los corchetes angulares (<, >) no son necesarios alrededor de los nombres de las reglas (como en BNF). Sin embargo, se pueden usar para delimitar un nombre de regla cuando se usan en prosa para discernir un nombre de regla.
+
+Los terminales se especifican mediante uno o más caracteres numéricos.
+
+Los caracteres numéricos se pueden especificar con el signo de porcentaje %, seguido de la base (b = binario, d = decimal y x = hexadecimal), seguido del valor o la concatenación de valores (indicada por .).
+
+Por ejemplo, un retorno de carro (CR) se especifica mediante %d13 en decimal o %x0D en hexadecimal. 
+
+Un retorno de carro seguido de un avance de línea (CRLF, \r\n) se puede especificar con una concatenación como %d13.10.
+
+\n representa LF, un salto de línea, o el número 10, y canónicamente un salto de línea significa simplemente "moverse hacia abajo una fila" en terminales y teletipos.
+
+\r representa CR, un retorno de carro, o el número 13. En sistemas Windows, Unix y la mayoría de terminales, un CR mueve el cursor al principio de la línea (aunque este no es el caso de las máquinas de 8 bits, ya que la mayoría de ellas avanzan a la siguiente línea con un CR).
+
+Algunos procesos, como la consola de texto, pueden agregar una CR automáticamente cuando se envía un LF. Sin embargo, dado que la CR simplemente se mueve al comienzo de la línea, no habría problema en enviar la CR dos veces.
+
+Por otro lado, los cuadros de diálogo, cuadros de texto y otros elementos de visualización, requieren tanto CR como LF para iniciar correctamente una nueva línea.
+
+Dado que realmente no hay ninguna desventaja en enviar ambos, y ambos son necesarios en algunas situaciones y contextos, la política más simple es usar los dos.
+
