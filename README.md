@@ -137,3 +137,17 @@ Las categorías anteriores de intermediarios solo consideran a aquellos que act�
 
 Por ejemplo, un "proxy de interceptación" (también conocido comúnmente como "proxy transparente") se diferencia de un proxy HTTP porque no es elegido por el cliente. En cambio, un proxy de interceptación filtra o redirige los paquetes salientes del puerto TCP 80 (y ocasionalmente el tráfico de otros puertos comunes). Los proxies de interceptación se encuentran comúnmente en puntos de acceso de redes públicas, como un medio para hacer cumplir la suscripción de cuentas antes de permitir el uso de servicios de Internet no locales, y dentro de los firewalls corporativos para hacer cumplir las políticas de uso de la red.
 
+>Cachés
+
+Un "caché" es un almacén local de mensajes de respuesta anteriores y el subsistema que controla el almacenamiento, la recuperación y la eliminación de dichos mensajes. 
+
+Un caché almacena respuestas para reducir el tiempo de latencia y el consumo de ancho de banda de red en futuras solicitudes equivalentes. Cualquier cliente o servidor puede emplear un caché, aunque no se puede utilizar un caché mientras actúa como túnel.
+
+El efecto de un caché es que la cadena de solicitud/respuesta se acorta si uno de los participantes a lo largo de la cadena tiene una respuesta almacenada en caché aplicable a esa solicitud.
+
+A continuación, se ilustra la cadena resultante si B tiene una copia almacenada en caché de una respuesta anterior de (O) (a través de C) para una solicitud que no ha sido almacenada en caché por (UA) o A.
+
+            >             >
+       (UA) =========== A =========== B - - - - - - C - - - - - - (O)
+                  <             <
+
