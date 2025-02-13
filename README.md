@@ -108,7 +108,7 @@ La mayor parte de la comunicación HTTP consiste en una solicitud de recuperaci�
 HTTP permite el uso de intermediarios para satisfacer solicitudes a través de una cadena de conexiones. Existen tres formas comunes de "intermediario" HTTP: proxy, puerta de enlace y túnel. En algunos casos, un único intermediario puede llegar a actuar como servidor de origen, como proxy, como puerta de enlace o túnel, cambiando su comportamiento en función de la naturaleza de cada solicitud en un contexto determinado.
 
          >             >             >             >
-    UA =========== A =========== B =========== C =========== O
+    (UA) =========== A =========== B =========== C =========== (O)
                <             <             <             <
 
 shs
