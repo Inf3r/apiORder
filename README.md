@@ -151,3 +151,33 @@ A continuación, se ilustra la cadena resultante si B tiene una copia almacenada
        (UA) =========== A =========== B - - - - - - C - - - - - - (O)
                   <             <
 
+Una respuesta es "almacenable en caché" si se permite que una caché almacene una copia del mensaje de respuesta para usarla en la respuesta a solicitudes posteriores. Incluso cuando una respuesta es almacenable en caché, puede haber restricciones adicionales impuestas por el cliente o por el servidor de origen sobre cuándo se puede usar esa respuesta almacenada en caché para una solicitud en particular. 
+
+Existe una amplia variedad de arquitecturas y configuraciones de cachés implementadas en la World Wide Web y dentro de grandes organizaciones. Estas incluyen jerarquías nacionales de cachés proxy para ahorrar ancho de banda y reducir la latencia, redes de distribución de contenido que usan el almacenamiento en caché de puerta de enlace para optimizar la distribución regional y global de sitios populares, sistemas colaborativos que transmiten o multidifunden entradas de caché, archivos de entradas de caché precargadas para usar en entornos fuera de línea o de alta latencia, etc.
+
+>Ejemplo de intercambio de mensajes
+
+El siguiente ejemplo ilustra un intercambio de mensajes HTTP/1.1 típico para una solicitud GET en la URI "http://www.example.com/hello.txt"
+
+Solicitud de cliente:
+
+```
+GET /hello.txt HTTP/1.1
+User-Agent: curl/7.64.1
+Host: www.example.com
+Accept-Language: en, mi, ar
+
+Server response:
+
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache
+Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT
+ETag: "34aa387-d-1568eb00"
+Accept-Ranges: bytes
+Content-Length: 51
+Vary: Accept-Encoding
+Content-Type: text/plain
+
+Hello World! My content includes a trailing CRLF.
+```
