@@ -303,6 +303,7 @@ ruleset = alt1 / alt2
 ruleset =/ alt3
 ruleset =/ alt4 / alt5
 ```
+
 es equivalente a
 
 ```
@@ -310,3 +311,46 @@ ruleset = alt1 / alt2 / alt3 / alt4 / alt5
 ```
 
 **RANGO DE VALORES**
+
+*%c##-##*
+
+Se puede especificar un rango de valores numéricos mediante el uso de un guión (-).
+
+La regla
+
+```
+OCTAL = %x30-37
+```
+
+es equivalente a
+
+```
+OCTAL = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7"
+```
+
+**GRUPO DE SECUENCIA**
+
+*(Rule1 Rule2)*
+
+Los elementos se pueden colocar entre paréntesis para agrupar reglas en una definición.
+
+Para hacer coincidir "a b d" o "a c d", se podría construir la siguiente regla:
+
+```
+group = a (b / c) d
+```
+
+Para hacer coincidir “a b” o “c d”, se podrían construir las siguientes reglas:
+
+```
+group = a b / c d
+group = (a b) / (c d)
+```
+
+**REPETICIÓN VARIABLE**
+
+*n*nRule*
+
+Para indicar la repetición de un elemento, se utiliza la forma <a>*<b>element. El <a> opcional proporciona el número mínimo de elementos que se incluirán (con el valor predeterminado de 0). El <b> opcional proporciona el número máximo de elementos que se incluirán (con el valor predeterminado de infinito).
+
+Utilizar ```*element``` para cero o más elementos, ```*1element``` para cero o un elemento, ```1*element``` para uno o más elementos y ```2*3element``` para dos o tres elementos, expresiones regulares ```e*, e?, e+``` y ```e{2,3}```.
