@@ -351,7 +351,7 @@ group = (a b) / (c d)
 
 ```n*nRule```
 
-Para indicar la repetición de un elemento, se utiliza la forma ```<a>*<b>element```. El <a> opcional proporciona el número mínimo de elementos que se incluirán (con el valor predeterminado de 0). El <b> opcional proporciona el número máximo de elementos que se incluirán (con el valor predeterminado de infinito).
+Para indicar la repetición de un elemento, se utiliza la forma ```<a>*<b>element```. El ```<a>``` opcional proporciona el número mínimo de elementos que se incluirán (con el valor predeterminado de 0). El ```<b>``` opcional proporciona el número máximo de elementos que se incluirán (con el valor predeterminado de infinito).
 
 Utilizar ```*element``` para cero o más elementos, ```*1element``` para cero o un elemento, ```1*element``` para uno o más elementos y ```2*3element``` para dos o tres elementos, expresiones regulares ```e*, e?, e+``` y ```e{2,3}```.
 
