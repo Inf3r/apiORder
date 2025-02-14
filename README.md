@@ -211,7 +211,9 @@ Cada elemento de protocolo en HTTP, que permite una referencia URI, indicará en
 
 Se recomienda que todos los remitentes y destinatarios admitan, como mínimo, URI con longitudes de 8000 octetos en elementos de protocolo. Tener en cuenta que esto implica que algunas estructuras y representaciones on-wire (por ejemplo, la línea de solicitud en HTTP/1.1) serán necesariamente más grandes en algunos casos.
 
+<p align="center">
 **(*)ABNF:**
+</p>
 
 En informática, la "Forma Backus-Naur Aumentada" (ABNF) es un metalenguaje basado en la "Forma Backus–Naur" (BNF) pero que consta de su propia sintaxis y reglas de derivación. El principio motriz de la ABNF es describir un sistema formal de un lenguaje que se utilizará como protocolo de comunicaciones bidireccional.
 
