@@ -289,3 +289,26 @@ Para aceptar la regla fu o la regla bar, se podría construir la siguiente regla
 fubar = fu / bar
 
 Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
+
+**Alternativas incrementales**
+
+*Rule1 =/ Rule2*
+
+Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
+
+La regla
+
+```
+ruleset = alt1 / alt2
+ruleset =/ alt3
+ruleset =/ alt4 / alt5
+```
+es equivalente a
+
+```
+ruleset = alt1 / alt2 / alt3 / alt4 / alt5
+```
+
+**Rango de valores**
+
+
