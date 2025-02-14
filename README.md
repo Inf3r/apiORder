@@ -386,7 +386,7 @@ CRLF	CR LF	                                        Nueva línea estándar de Int
 BIT	"0" / "1"	                                Dígito binario
 ```
 
-**SECUENCIA OPCIONAL**
+**SECUENCIA OPCIONAL:**
 
 ```[Rule]```
 
@@ -398,7 +398,7 @@ Para indicar un elemento opcional, las siguientes construcciones son equivalente
 0*1(fubar snafu)
 ```
 
-**PRIORIDAD DEL OPERADOR**
+**PRIORIDAD DEL OPERADOR:**
 
 Los siguientes operadores tienen la prioridad dada desde el enlace más apretado hasta el enlace más flojo:
 
