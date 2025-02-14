@@ -386,9 +386,35 @@ CRLF	CR LF	                                        Nueva línea estándar de Int
 BIT	"0" / "1"	                                Dígito binario
 ```
 
+**SECUENCIA OPCIONAL**
+
+```[Rule]```
+
+Para indicar un elemento opcional, las siguientes construcciones son equivalentes:
+
+```
+[fubar snafu]
+*1(fubar snafu)
+0*1(fubar snafu)
+```
+
+**PRIORIDAD DEL OPERADOR**
+
+Los siguientes operadores tienen la prioridad dada desde el enlace más apretado hasta el enlace más flojo:
+
+```
+Strings, names formation
+Comment
+Value range
+Repetition
+Grouping, optional
+Concatenation
+Alternative
+```
+
 **EJEMPLO DE CÓDIGO POSTAL:**
 
-El ejemplo de dirección postal (de EE. UU.) que figura en la página del Formulario Aumentado Backus-Naur (ABNF) se puede especificar de la siguiente manera:
+Un ejemplo de dirección postal (de EE. UU.) del Formulario Aumentado Backus-Naur (ABNF) se puede especificar de la siguiente manera:
 
 ```
 postal-address   = name-part street zip-part
