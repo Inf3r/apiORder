@@ -209,11 +209,9 @@ partial-URI   = relative-part [ "?" query ]
 
 Cada elemento de protocolo en HTTP, que permite una referencia URI, indicará en su producción **(*)ABNF** si el elemento permite cualquier forma de referencia (URI-reference), solo una URI en forma absoluta (absolute-URI), solo la ruta y los componentes de consulta opcionales (partial-URI), o alguna combinación de lo anterior. A menos que se indique lo contrario, las referencias URI se analizan en relación con la URI de destino.
 
-Se recomienda que todos los remitentes y destinatarios admitan, como mínimo, URI con longitudes de 8000 octetos en elementos de protocolo. Tener en cuenta que esto implica que algunas estructuras y representaciones on-wire (por ejemplo, la línea de solicitud en HTTP/1.1) serán necesariamente más grandes en algunos casos.
+Se recomienda que todos los remitentes y destinatarios admitan, como mínimo, URI con longitudes de 8000 octetos en elementos de protocolo. Tener en cuenta que esto implica que algunas estructuras y representaciones on-wire (por ejemplo, la línea de solicitud en HTTP/1.1) serán necesariamente más grandes en algunos casos. 
 
-<p align="center">
 **(*)ABNF:**
-</p>
 
 En informática, la "Forma Backus-Naur Aumentada" (ABNF) es un metalenguaje basado en la "Forma Backus–Naur" (BNF) pero que consta de su propia sintaxis y reglas de derivación. El principio motriz de la ABNF es describir un sistema formal de un lenguaje que se utilizará como protocolo de comunicaciones bidireccional.
 
@@ -238,7 +236,7 @@ Por ejemplo, un retorno de carro (CR) se especifica mediante %d13 en decimal o %
 
 Un retorno de carro seguido de un avance de línea (CRLF, \r\n) se puede especificar con una concatenación decimal como **%d13.10**.
 
-**(*)Conclusión:**
+**(*)CONCLUSIÓN:**
 
 \n representa LF, un salto de línea, o el número 10 en decimal, y canónicamente un salto de línea significa simplemente "moverse hacia abajo una fila" en terminales y teletipos.
 
@@ -262,7 +260,7 @@ El espacio en blanco se utiliza para separar elementos de una definición; para 
 
 Las definiciones están alineadas a la izquierda. Cuando se requieren varias líneas (para facilitar la lectura), las líneas de continuación se sangran con espacios en blanco.
 
-**; Comentario**
+**; COMENTARIO**
 
 Un punto y coma (;) inicia un comentario que continúa hasta el final de la línea.
 
@@ -280,7 +278,7 @@ bar    = %x62	; b
 mumble = fu bar fu
 ```
 
-**Concatenación alternativa**
+**CONCATENACIÓN ALTERNATIVA**
 
 *Rule1 / Rule2*
 
@@ -292,7 +290,7 @@ fubar = fu / bar
 
 Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
 
-**Alternativas incrementales**
+**ALTERNATIVAS INCREMENTALES**
 
 *Rule1 =/ Rule2*
 
@@ -311,6 +309,4 @@ es equivalente a
 ruleset = alt1 / alt2 / alt3 / alt4 / alt5
 ```
 
-**Rango de valores**
-
-
+**RANGO DE VALORES**
