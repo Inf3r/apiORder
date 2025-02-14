@@ -15,7 +15,7 @@
 
 >Historia y evolución
 
-En los comienzos del desarrollo de esta tecnología, que Tim Berners-Lee creó, HTTP existía con el nombre de "The Mesh", dentro de un entorno de laboratorio informático aislado. Luego, fue renombrado a "HTTP" y datos como la URL completa no se incluía, ya que el protocolo, la dirección y el puerto no eran necesarios una vez que se conectaba al único servidor que funcionaba en ese entonces. A medida que la Web fue creciendo, HTTP se amplió para incluir solicitudes y respuestas dentro de mensajes, transferir formatos de datos arbitrarios utilizando tipos de medios similares a MIME (especificación de correo electrónico) y enrutar solicitudes a través de intermediarios. Estos protocolos se definieron finalmente como HTTP/0.9 y HTTP/1.0.
+En los comienzos del desarrollo de esta tecnología, que Tim Berners-Lee creó, HTTP existía con el nombre de "The Mesh", dentro de un entorno de laboratorio informático aislado. Luego, fue renombrado a "HTTP" donde datos como la URL completa no se incluía, ya que el protocolo, la dirección y el puerto no eran necesarios una vez que se conectaba al único servidor que funcionaba en ese entonces como pruebas. **(Ultra resumiendo)** A medida que la Web fue creciendo, HTTP se amplió para incluir solicitudes y respuestas dentro de mensajes, transferir formatos de datos arbitrarios utilizando tipos de medios similares a MIME (especificación de correo electrónico) y enrutar solicitudes a través de intermediarios. Estos protocolos se definieron finalmente como HTTP/0.9 y HTTP/1.0.
 
 HTTP/1.1 fue diseñado para refinar las características del protocolo, manteniendo la compatibilidad con la sintaxis de mensajería basada en texto existente, mejorando su interoperabilidad, escalabilidad y robustez en Internet. Esto incluía delimitadores de datos basados ​​en longitud para contenido fijo y dinámico (fragmentado), un marco consistente para la negociación de contenido, validadores opacos para solicitudes condicionales, controles de caché para una mejor consistencia de caché, solicitudes de rango para actualizaciones parciales y conexiones persistentes predeterminadas.
 
@@ -213,7 +213,7 @@ Se recomienda que todos los remitentes y destinatarios admitan, como mínimo, UR
 
 **(*)ABNF:**
 
-En informática, la "Forma Backus-Naur Aumentada" (ABNF) es un metalenguaje basado en la forma Backus–Naur (BNF) pero que consta de su propia sintaxis y reglas de derivación. El principio motriz de la ABNF es describir un sistema formal de un lenguaje que se utilizará como protocolo de comunicaciones bidireccional.
+En informática, la "Forma Backus-Naur Aumentada" (ABNF) es un metalenguaje basado en la "Forma Backus–Naur" (BNF) pero que consta de su propia sintaxis y reglas de derivación. El principio motriz de la ABNF es describir un sistema formal de un lenguaje que se utilizará como protocolo de comunicaciones bidireccional.
 
 Una especificación ABNF es un conjunto de reglas de derivación, escritas como:
 
@@ -252,7 +252,7 @@ En el caso del texto literal, se especifica mediante el uso de una cadena entre 
 
 El RFC 7405 agregó una sintaxis para cadenas que distinguen entre mayúsculas y minúsculas: **%s**"aBc", por lo que en este caso, solo coincidirá con "aBc". 
 
-Antes de esa implementación, una cadena que distinguía entre mayúsculas y minúsculas solo se podía especificar enumerando los caracteres individuales: por ejemplo para que coincida con “aBc”, la definición sería %d97.66.99. 
+Antes de esa implementación, una cadena que distinguía entre mayúsculas y minúsculas solo se podía especificar enumerando los caracteres individuales: por ejemplo para que coincida con “aBc”, la definición sería %d97.66.99.
 
 Una cadena también se puede especificar explícitamente como no distinguible entre mayúsculas y minúsculas con el prefijo **%i**.
 
