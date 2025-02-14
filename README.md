@@ -365,9 +365,9 @@ Utilizar ```2DIGIT``` para obtener dos dígitos numéricos y ```3DIGIT``` para o
 
 **REGLAS BÁSICAS ABNF:**
 
-**REGLA	DEFINICIÓN FORMAL	                           SIGNIFICADO**
-
 ```
+REGLA	DEFINICIÓN FORMAL	                           SIGNIFICADO
+
 ALPHA	%x41–%x5A / %x61–%x7A	                  Letras ASCII mayúsculas y minúsculas (A–Z, a–z)
 DIGIT	%x30–39	                                    Dígitos decimales (0–9)
 HEXDIG	DIGIT / "A" / "B" / "C" / "D" / "E" / "F"	Dígitos hexadecimales (0–9, A–F, a–f)
