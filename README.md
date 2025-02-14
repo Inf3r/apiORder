@@ -349,7 +349,7 @@ group = (a b) / (c d)
 
 **REPETICIÓN VARIABLE**
 
-*n*nRule*
+```*n*nRule*```
 
 Para indicar la repetición de un elemento, se utiliza la forma ```<a>*<b>element```. El <a> opcional proporciona el número mínimo de elementos que se incluirán (con el valor predeterminado de 0). El <b> opcional proporciona el número máximo de elementos que se incluirán (con el valor predeterminado de infinito).
 
