@@ -369,20 +369,20 @@ Utilizar ```2DIGIT``` para obtener dos dígitos numéricos y ```3DIGIT``` para o
 REGLA	DEFINICIÓN FORMAL	                   SIGNIFICADO
 
 ALPHA	%x41–%x5A / %x61–%x7A	                   Letras ASCII mayúsculas y minúsculas (A–Z, a–z)
-DIGIT	%x30–39	                                    Dígitos decimales (0–9)
+DIGIT	%x30–39	                                   Dígitos decimales (0–9)
 HEXDIG	DIGIT / "A" / "B" / "C" / "D" / "E" / "F"	Dígitos hexadecimales (0–9, A–F, a–f)
-DQUOTE	%x22	                                    Comilla doble
-SP	%x20	                                    Espacio
-HTAB	%x09	                                    Tab horizontal
+DQUOTE	%x22	                                   Comilla doble
+SP	%x20	                                   Espacio
+HTAB	%x09	                                   Tab horizontal
 WSP	SP / HTAB	                           Espacio y Tab horizontal
-LWSP	*(WSP / CRLF WSP)	                           Espacio en blanco lineal (más allá de la nueva línea)
+LWSP	*(WSP / CRLF WSP)	                   Espacio en blanco lineal (más allá de la nueva línea)
 VCHAR	%x21–%x7E	                           Caracteres visibles (imprimibles)
 CHAR	%x01–%x7F	                           Cualquier carácter ASCII, excepto NUL
 OCTET	%x00–%xFF	                           8 bits de datos
-CTL	%x00–%x1F / %x7F	                           Controles
-CR	%x0D	                                    Retorno de carro
-LF	%x0A	                                    Avance de línea
-CRLF	CR LF	                                    Nueva línea estándar de Internet
+CTL	%x00–%x1F / %x7F	                   Controles
+CR	%x0D	                                   Retorno de carro
+LF	%x0A	                                   Avance de línea
+CRLF	CR LF	                                   Nueva línea estándar de Internet
 BIT	"0" / "1"	                           Dígito binario
 ```
 
