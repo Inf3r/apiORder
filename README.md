@@ -260,13 +260,13 @@ El espacio en blanco se utiliza para separar elementos de una definición; para 
 
 Las definiciones están alineadas a la izquierda. Cuando se requieren varias líneas (para facilitar la lectura), las líneas de continuación se sangran con espacios en blanco.
 
-**; COMENTARIO**
+**; COMENTARIO:**
 
 Un punto y coma (;) inicia un comentario que continúa hasta el final de la línea.
 
-**Concatenación**
+**CONCATENACIÓN:**
 
-*Rule1 Rule2*
+```Rule1 Rule2```
 
 Una regla se puede definir enumerando una secuencia de nombres de reglas.
 
@@ -278,9 +278,9 @@ bar    = %x62	; b
 mumble = fu bar fu
 ```
 
-**CONCATENACIÓN ALTERNATIVA**
+**CONCATENACIÓN ALTERNATIVA:**
 
-*Rule1 / Rule2*
+```Rule1 / Rule2```
 
 Una regla puede definirse mediante una lista de reglas alternativas separadas por una barra (/).
 
@@ -290,9 +290,9 @@ fubar = fu / bar
 
 Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
 
-**ALTERNATIVAS INCREMENTALES**
+**ALTERNATIVAS INCREMENTALES:**
 
-*Rule1 =/ Rule2*
+```Rule1 =/ Rule2```
 
 Se pueden agregar alternativas adicionales a una regla mediante el uso de =/ entre el nombre de la regla y la definición.
 
@@ -310,9 +310,9 @@ es equivalente a
 ruleset = alt1 / alt2 / alt3 / alt4 / alt5
 ```
 
-**RANGO DE VALORES**
+**RANGO DE VALORES:**
 
-*%c##-##*
+```%c##-##```
 
 Se puede especificar un rango de valores numéricos mediante el uso de un guión (-).
 
@@ -328,9 +328,9 @@ es equivalente a
 OCTAL = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7"
 ```
 
-**GRUPO DE SECUENCIA**
+**GRUPO DE SECUENCIA:**
 
-*(Rule1 Rule2)*
+```(Rule1 Rule2)```
 
 Los elementos se pueden colocar entre paréntesis para agrupar reglas en una definición.
 
@@ -347,10 +347,14 @@ group = a b / c d
 group = (a b) / (c d)
 ```
 
-**REPETICIÓN VARIABLE**
+**REPETICIÓN VARIABLE:**
 
 ```n*nRule```
 
 Para indicar la repetición de un elemento, se utiliza la forma ```<a>*<b>element```. El <a> opcional proporciona el número mínimo de elementos que se incluirán (con el valor predeterminado de 0). El <b> opcional proporciona el número máximo de elementos que se incluirán (con el valor predeterminado de infinito).
 
 Utilizar ```*element``` para cero o más elementos, ```*1element``` para cero o un elemento, ```1*element``` para uno o más elementos y ```2*3element``` para dos o tres elementos, expresiones regulares ```e*, e?, e+``` y ```e{2,3}```.
+
+**REPETICIÓN ESPECÍFICA:**
+
+
