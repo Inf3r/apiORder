@@ -461,3 +461,27 @@ El esquema de URI "https" se define por la presente para acuñar identificadores
 https-URI = "https" "://" authority path-abempty [ "?" query ]
 ```
 
+El servidor de origen de un URI "https" se identifica mediante el componente de autoridad, que incluye un identificador de host y un número de puerto opcional. Si el subcomponente del puerto está vacío o no se proporciona, el puerto TCP 443 (el puerto reservado para HTTP sobre TLS) es el predeterminado. El origen determina quién tiene derecho a responder con autoridad a las solicitudes dirigidas al recurso identificado.
+
+Un remitente NO DEBE generar un URI "https" con un identificador de host vacío. Un destinatario que procese dicha referencia de URI DEBE rechazarla por considerarla no válida. El componente de ruta jerárquica y el componente de consulta opcional identifican el recurso de destino dentro del espacio de nombres de ese servidor de origen.
+
+Un cliente DEBE asegurarse de que sus solicitudes HTTP para un recurso "https" estén seguras, antes de ser comunicadas, y que solo acepte respuestas seguras a esas solicitudes. Tener en cuenta que la definición de qué mecanismos criptográficos son aceptables para el cliente y el servidor suele negociarse y puede cambiar con el tiempo.
+
+Los recursos disponibles a través del esquema "https" no tienen identidad compartida con el esquema "http". Son orígenes distintos con espacios de nombres separados y de capas diferentes. Sin embargo, las extensiones de HTTP que se definen como aplicables a todos los orígenes con el mismo host, como el protocolo de cookies, permiten que la información establecida por un servicio afecte la comunicación con otros servicios dentro de un grupo coincidente de dominios de host. Estas extensiones deben diseñarse con mucho cuidado para evitar que la información obtenida de una conexión segura (HTTPs) se intercambie inadvertidamente dentro de un contexto no seguro (HTTP).
+
+>HTTPS, Normalización y comparación
+
+Los URI con un esquema "http" o "https" se normalizan y comparan de acuerdo con los métodos definidos, utilizando los valores predeterminados descritos anteriormente para cada esquema.
+
+HTTP no requiere el uso de un método específico para determinar la equivalencia. Por ejemplo, una clave de caché podría compararse como una cadena simple, después de una normalización basada en sintaxis o después de una normalización basada en esquemas.
+
+La normalización basada en esquemas de los URI "http" y "https" implican las siguientes reglas adicionales:
+
+* Si el puerto es igual al puerto predeterminado de un esquema, la forma normal es omitir el subcomponente del puerto.
+* Cuando no se utiliza como destino de una solicitud de OPCIONES, un componente de ruta vacío equivale a una ruta absoluta de "/", por lo que la forma normal es proporcionar una ruta de "/" en su lugar.
+* El esquema y el host no distinguen entre mayúsculas y minúsculas y normalmente se proporcionan en minúsculas; todos los demás componentes se comparan distinguiendo entre mayúsculas y minúsculas.
+* Los caracteres distintos de los del conjunto "reservado" son equivalentes a sus octetos codificados en porcentaje: la forma normal es no codificarlos (consulte las Secciones 2.1 y 2.2 de [URI]).
+
+
+
+
