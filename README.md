@@ -546,7 +546,7 @@ Cuando se utiliza un URI "http" dentro de un contexto que solicita acceso al rec
 
 Si el servidor responde a dicha solicitud con un mensaje de respuesta HTTP no provisional, entonces esa respuesta se considera una respuesta autorizada a la solicitud del cliente.
 
-Sin embargo, tenga en cuenta que lo anterior no es el único medio para obtener una respuesta autorizada, ni implica que siempre sea necesaria una respuesta autorizada. Por ejemplo, el campo de encabezado ALTSVC permite que un servidor de origen identifique otros servicios que también tienen autoridad para ese origen. El acceso a recursos identificados "http" también puede proporcionarse mediante protocolos fuera del alcance de este documento.
+Sin embargo, hay que tener en cuenta que lo anterior no es el único medio para obtener una respuesta autorizada, ni implica que siempre sea necesaria una respuesta autorizada. Por ejemplo, el campo de encabezado ALTSVC permite que un servidor de origen identifique otros servicios que también tienen autoridad para ese origen. El acceso a recursos identificados "http" también puede proporcionarse mediante protocolos fuera del alcance de este documento.
 
 >Orígenes HTTPS
 
