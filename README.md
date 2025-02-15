@@ -439,5 +439,25 @@ state            = 2ALPHA
 zip-code         = 5DIGIT ["-" 4DIGIT]
 ```
 
+>Esquemas de URI HTTP
 
+La presencia de un URI "http" o "https" no implica que siempre haya un servidor HTTP en el origen identificado escuchando conexiones. Cualquiera puede crear un URI, exista o no un servidor, y si ese servidor asigna o no ese identificador a un recurso. La naturaleza delegada de los nombres registrados y las direcciones IP crea un espacio de nombres federado, esté presente o no un servidor HTTP.
+
+El esquema de URI "http" se define por la presente para acuñar identificadores dentro del espacio de nombres jerárquico gobernado por un posible servidor de origen HTTP, que escucha conexiones TCP en un puerto determinado.
+
+```
+http-URI = "http" "://" authority path-abempty [ "?" query ]
+```
+
+El servidor de origen para un URI "http" se identifica mediante el componente de autoridad, que incluye un identificador de host y un número de puerto opcional. Si el subcomponente del puerto está vacío o no se proporciona, el puerto TCP 80 (el puerto reservado para los servicios WWW NO SEGUROS) es el predeterminado. El origen determina quién tiene derecho a responder con autoridad a las solicitudes dirigidas al recurso identificado.
+
+Un remitente NO DEBE generar un URI "http" con un identificador de host vacío. Un destinatario que procese dicha referencia de URI DEBE rechazarla por considerarla no válida. El componente de ruta jerárquica y el componente de consulta opcional identifican el recurso de destino dentro del espacio de nombres de ese servidor de origen.
+
+>Esquemas de URI HTTPs
+
+El esquema de URI "https" se define por la presente para acuñar identificadores dentro del espacio de nombres jerárquico gobernado por un servidor de origen potencial, que escucha conexiones TCP en un puerto determinado y es capaz de establecer una conexión TLS (TLS 1.3+) que ha sido protegida para la comunicación HTTP. En este contexto, "seguro" significa específicamente que el servidor ha sido autenticado como si actuara en nombre de la autoridad identificada y que toda comunicación HTTP con ese servidor tiene una protección de confidencialidad e integridad que es aceptable tanto para el cliente como para el servidor.
+
+```
+https-URI = "https" "://" authority path-abempty [ "?" query ]
+```
 
