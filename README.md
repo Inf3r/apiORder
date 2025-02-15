@@ -478,10 +478,77 @@ HTTP no requiere el uso de un método específico para determinar la equivalenci
 La normalización basada en esquemas de los URI "http" y "https" implican las siguientes reglas adicionales:
 
 * Si el puerto es igual al puerto predeterminado de un esquema, la forma normal es omitir el subcomponente del puerto.
-* Cuando no se utiliza como destino de una solicitud de OPCIONES, un componente de ruta vacío equivale a una ruta absoluta de "/", por lo que la forma normal es proporcionar una ruta de "/" en su lugar.
+* Cuando no se utiliza como destino de una solicitud de OPTIONS, un componente de ruta vacío equivale a una ruta absoluta de "/", por lo que la forma normal es proporcionar una ruta de "/" en su lugar.
 * El esquema y el host no distinguen entre mayúsculas y minúsculas y normalmente se proporcionan en minúsculas; todos los demás componentes se comparan distinguiendo entre mayúsculas y minúsculas.
-* Los caracteres distintos de los del conjunto "reservado" son equivalentes a sus octetos codificados en porcentaje: la forma normal es no codificarlos (consulte las Secciones 2.1 y 2.2 de [URI]).
+* Los caracteres distintos de los del conjunto "reservado" son equivalentes a sus octetos codificados en porcentaje: la forma normal es no codificarlos.
 
+Por ejemplo, los tres URI siguientes son equivalentes:
+
+```
+http://example.com:80/~smith/home.html
+http://EXAMPLE.com/%7Esmith/home.html
+http://EXAMPLE.com:/%7esmith/home.html
+```
+
+Se puede suponer que dos URI HTTP que son equivalentes después de la normalización (usando cualquier método) identifican el mismo recurso, y cualquier componente HTTP PUEDE realizar la normalización. Como resultado, los recursos distintos NO DEBEN identificarse mediante URI HTTP que sean equivalentes después de la normalización.
+
+>Desuso de información de usuario en URI HTTPS
+
+La sintaxis genérica de URI para autoridad también incluye un subcomponente de información de usuario para incluir información de autenticación de usuario en el URI. En ese subcomponente, el uso del formato "usuario:contraseña" está obsoleto.
+
+Algunas implementaciones utilizan el componente userinfo para la configuración interna de la información de autenticación, como dentro de las opciones de invocación de comandos, archivos de configuración o listas de marcadores, aunque dicho uso pueda exponer un identificador de usuario o una contraseña.
+
+Un remitente NO DEBE generar el subcomponente información de usuario (y su delimitador "@") cuando se genera una referencia de URI "http" o "https" dentro de un mensaje como URI de destino o valor de campo.
+
+Antes de hacer uso de una referencia URI "http" o "https" recibida de una fuente que no es de confianza, el destinatario DEBE analizar la información del usuario y tratar su presencia como un error. Es probable que esta técnica sea utilizada para ocultar la autoridad con el fin de realizar ataques de phishing.
+
+>Referencias HTTPS con identificadores de fragmentos
+
+Los identificadores de fragmentos permiten la identificación indirecta de un recurso secundario, independiente del esquema URI. Algunos elementos del protocolo que hacen referencia a un URI permiten la inclusión de un fragmento, mientras que otros no. Se distinguen por el uso de la regla ABNF para elementos donde se permite la fragmentación; de lo contrario, se utiliza una regla específica que excluye fragmentos.
+
+Nota: El componente identificador de fragmento no forma parte de la definición de esquema para un esquema URI, por lo tanto no aparece en las definiciones ABNF para los esquemas URI "http" y "https" anteriores.
+
+>Acceso autorizado
+
+El acceso autorizado se refiere a eliminar la referencia a un identificador determinado, con el fin de acceder al recurso identificado, de una manera que el cliente considere autorizada (controlada por el propietario del recurso). El proceso para determinar si se concede el acceso está definido por el esquema de URI y, a menudo, utiliza datos dentro de los componentes de URI, como el componente de autoridad cuando se utiliza la sintaxis genérica. Sin embargo, el acceso autorizado no se limita al mecanismo identificado.
+
+>Origen de la URI
+
+El "origen" de un URI determinado es el triple de esquema, host y puerto después de normalizar el esquema y el host a minúsculas y normalizar el puerto para eliminar los ceros iniciales. Si se omite el puerto del URI, se utiliza el puerto predeterminado para ese esquema. Por ejemplo, la URI
+
+```
+https://Example.Com/happy.js
+```
+
+tendría el origen
+
+```
+{ "https", "example.com", "443" }
+```
+
+que también puede describirse como el prefijo URI normalizado con el puerto siempre presente:
+
+```
+https://example.com:443
+```
+
+Cada origen define su propio espacio de nombres y controla cómo se asignan los identificadores dentro de ese espacio de nombres a los recursos. A su vez, la forma en que el origen responde a solicitudes válidas, de manera consistente a lo largo del tiempo, determina la semántica que los usuarios asociarán con un URI, y la utilidad de esa semántica es lo que en última instancia transforma estos mecanismos en un recurso al que los usuarios pueden hacer referencia y acceder en el futuro.
+
+Dos orígenes son distintos si difieren en esquema, host o puerto. Incluso cuando se puede verificar que la misma entidad controla dos orígenes distintos, los dos espacios de nombres bajo esos orígenes son distintos a menos que un servidor autorizado para ese origen tenga un alias explícito.
+
+>Orígenes HTTP
+
+Aunque HTTP es independiente del protocolo de transporte, el esquema "http" es específico para asociar autoridad con quien controla el servidor de origen que escucha las conexiones TCP en el puerto indicado de cualquier host identificado dentro del componente de autoridad. Este es un sentido de autoridad muy débil porque depende tanto de los mecanismos de resolución de nombres específicos del cliente como de la comunicación que podría no estar protegida de un atacante en la ruta. Sin embargo, es un mínimo suficiente para vincular identificadores "http" a un servidor de origen para una resolución consistente dentro de un entorno confiable.
+
+Si el identificador de host se proporciona como una dirección IP, el servidor de origen es el que escucha (si lo hay) en el puerto TCP indicado en esa dirección IP. Si el host es un nombre registrado, el nombre registrado es un identificador indirecto que se utiliza con un servicio de resolución de nombres, como DNS, para encontrar una dirección para un servidor de origen apropiado.
+
+Cuando se utiliza un URI "http" dentro de un contexto que solicita acceso al recurso indicado, un cliente PUEDE intentar acceder resolviendo el identificador de host en una dirección IP, estableciendo una conexión TCP a esa dirección en el puerto indicado y enviando a través de esa conexión un mensaje de solicitud HTTP que contiene un destino de solicitud que coincide con el URI de destino del cliente.
+
+Si el servidor responde a dicha solicitud con un mensaje de respuesta HTTP no provisional, entonces esa respuesta se considera una respuesta autorizada a la solicitud del cliente.
+
+Sin embargo, tenga en cuenta que lo anterior no es el único medio para obtener una respuesta autorizada, ni implica que siempre sea necesaria una respuesta autorizada. Por ejemplo, el campo de encabezado ALTSVC permite que un servidor de origen identifique otros servicios que también tienen autoridad para ese origen. El acceso a recursos identificados "http" también puede proporcionarse mediante protocolos fuera del alcance de este documento.
+
+>Orígenes HTTPS
 
 
 
