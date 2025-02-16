@@ -548,5 +548,30 @@ Sin embargo, hay que tener en cuenta que lo anterior no es el único medio para 
 
 >Orígenes HTTPS
 
+El esquema "https" asocia la autoridad en función de la capacidad de un servidor para utilizar la clave privada correspondiente a un certificado que el cliente considera confiable para el servidor de origen identificado. El cliente generalmente se basa en una cadena de confianza, transmitida desde algún ancla de confianza preestablecida o configurada, para considerar que un certificado es confiable.
 
+En HTTP/1.1 y versiones anteriores, un cliente solo atribuirá autoridad a un servidor cuando se comunique a través de una conexión segura y establecida con éxito específicamente con el host de ese URI de origen.
 
+El establecimiento de la conexión y la verificación del certificado se utilizan como prueba de autoridad.
+
+En HTTP/2 y HTTP/3, un cliente atribuirá autoridad a un servidor cuando se comuniquen a través de una conexión segura y establecida con éxito si el host del origen de la URI coincide con cualquiera de los hosts presentes en el certificado del servidor y el cliente cree que podría abrir una conexión a ese host para esa URI. 
+
+En la práctica, un cliente realizará una consulta DNS para verificar que el host del origen contenga la misma dirección IP del servidor que la conexión establecida.
+
+Esta restricción puede eliminarse si el servidor de origen envía un marco ORIGIN equivalente.
+
+El host y el valor del puerto del destino de la solicitud se pasan dentro de cada solicitud HTTP, identificando el origen y distinguiéndolo de otros espacios de nombres que podrían estar controlados por el mismo servidor. 
+
+Es responsabilidad del origen asegurar que todos los servicios provistos con control sobre la clave privada de su certificado sean igualmente responsables de administrar los espacios de nombres "https" correspondientes o al menos estén preparados para rechazar solicitudes que parezcan haber sido mal dirigidas.
+
+Un servidor de origen podría no estar dispuesto a procesar solicitudes para ciertas URI de destino incluso cuando tiene la autoridad para hacerlo. Por ejemplo, cuando un host opera distintos servicios en diferentes puertos (por ejemplo, 443 y 8000), es necesario verificar la URI de destino en el servidor de origen (incluso después de que se haya asegurado la conexión) porque un atacante de red podría hacer que las conexiones para un puerto se reciban en algún otro puerto.
+
+No verificar la URI de destino podría permitir que un atacante de este tipo reemplace una respuesta a una URI de destino (por ejemplo, "https://example.com/foo") con una respuesta aparentemente autoritaria del otro puerto (por ejemplo, "https://example.com:8000/foo").
+
+Tener en cuenta que el esquema "https" no se basa en TCP y el número de puerto conectado para asociar la autoridad, ya que ambos están fuera de la comunicación segura y, por lo tanto, no se puede confiar en ellos como definitivos.  Por lo tanto, la comunicación HTTP puede tener lugar a través de cualquier canal que haya sido protegido, incluidos los protocolos que no utilizan TCP.
+
+Cuando se utiliza una URI "https" dentro de un contexto que solicita acceso al recurso indicado, un cliente PUEDE intentar acceder resolviendo el identificador de host a una dirección IP, estableciendo una conexión TCP a esa dirección en el puerto indicado, asegurando la conexión de extremo a extremo iniciando exitosamente TLS sobre TCP con protección de confidencialidad e integridad, y enviando a través de esa conexión un mensaje de solicitud HTTP que contenga un destino de solicitud que coincida con la URI de destino del cliente.
+
+Si el servidor responde a dicha solicitud con un mensaje de respuesta HTTP no provisional, entonces esa respuesta se considera una respuesta autorizada a la solicitud del cliente. Sin embargo, tener en cuenta que lo anterior no es el único medio para obtener una respuesta autorizada, ni implica que una respuesta autorizada siempre sea necesaria.
+
+>Verificación de certificado HTTPS
