@@ -566,7 +566,17 @@ Es responsabilidad del origen asegurar que todos los servicios provistos con con
 
 Un servidor de origen podría no estar dispuesto a procesar solicitudes para ciertas URI de destino incluso cuando tiene la autoridad para hacerlo. Por ejemplo, cuando un host opera distintos servicios en diferentes puertos (por ejemplo, 443 y 8000), es necesario verificar la URI de destino en el servidor de origen (incluso después de que se haya asegurado la conexión) porque un atacante de red podría hacer que las conexiones para un puerto se reciban en algún otro puerto.
 
-No verificar la URI de destino podría permitir que un atacante de este tipo reemplace una respuesta a una URI de destino (por ejemplo, "https://example.com/foo") con una respuesta aparentemente autoritaria del otro puerto (por ejemplo, "https://example.com:8000/foo").
+No verificar la URI de destino podría permitir que un atacante de este tipo reemplace una respuesta a una URI de destino, por ejemplo
+
+```
+https://example.com/foo
+```
+
+con una respuesta aparentemente autoritaria del otro puerto, por ejemplo
+
+```
+https://example.com:8000/foo
+```
 
 Tener en cuenta que el esquema "https" no se basa en TCP y el número de puerto conectado para asociar la autoridad, ya que ambos están fuera de la comunicación segura y, por lo tanto, no se puede confiar en ellos como definitivos.  Por lo tanto, la comunicación HTTP puede tener lugar a través de cualquier canal que haya sido protegido, incluidos los protocolos que no utilizan TCP.
 
