@@ -33,9 +33,9 @@ En los viejos tiempos, los problemas de interoperabilidad eran habituales. En un
 
 Mientras tanto, se estaba llevando a cabo una estandarización adecuada, que se produjo en paralelo a las diversas implementaciones de HTTP/1.0. La primera versión estandarizada de HTTP, HTTP/1.1, se publicó a principios de 1997, sólo unos meses después de HTTP/1.0.
 
-HTTP/1.1 aclaró ambigüedades e introdujo numerosas mejoras, por ejemplo, la posibilidad de reutilizar la conexión (a diferencia de HTTP/0.9, que cerraba la conexión al terminar cada mensaje), lo cual generaba ahorro de tiempo, de latencia y recursos informáticos.
+HTTP/1.1 aclaró ambigüedades e introdujo numerosas mejoras, por ejemplo, la posibilidad de reutilizar la conexión (a diferencia de HTTP/0.9 y /1.0, que cerraban la conexión al terminar cada mensaje (al recibir la respuesta)), lo cual generaba ahorro de tiempo, de latencia y recursos informáticos.
 
-Ya no era necesario abrir la conexión varias veces para mostrar los recursos integrados en el documento original (HTTP/0.9 debía abrir una conexión para la solicitud de un documento con un archivo X, para luego tener que abrir una segunda conexión y obtener ese archivo X).
+Tampoco era necesario abrir la conexión varias veces para mostrar los recursos integrados en el documento original solicitado (HTTP/0.9 y /1.0 debían abrir una conexión para la solicitud de un documento con un archivo X, para luego tener que abrir una segunda conexión y obtener ese archivo X).
 
 También se agregó la segmentación de mensajes, lo que permitió enviar una segunda solicitud antes de que se transmitiera por completo la respuesta a la primera, reduciendo así la latencia de la comunicación e incrementando la interoperabilidad.
 
