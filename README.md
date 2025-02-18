@@ -157,7 +157,11 @@ Existe una amplia variedad de arquitecturas y configuraciones de cachés impleme
 
 >Ejemplo de intercambio de mensajes
 
-El siguiente ejemplo ilustra un intercambio de mensajes HTTP/1.1 típico para una solicitud GET en la URI "http://www.example.com/hello.txt"
+El siguiente ejemplo ilustra un intercambio de mensajes HTTP/1.1 típico para una solicitud GET en la URI
+
+```
+http://www.example.com/hello.txt
+```
 
 Solicitud de cliente:
 
