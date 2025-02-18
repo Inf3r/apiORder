@@ -226,7 +226,7 @@ rule = definition; comment CR
 LF
 ```
 
-Donde **rule** es una no-terminal que no distingue entre mayúsculas y minúsculas, **definition** consta de secuencias de símbolos que definen la regla, un **comment** para la documentación, y finaliza con un retorno de carro (CR) y un salto de línea (LF).
+Donde **rule** es una "no terminal" (un símbolo "si terminal" es un literal como por ejemplo: "+", o "function", o una clase como integer) que no distingue entre mayúsculas y minúsculas, **definition** consta de secuencias de símbolos que definen la regla, un **comment** para la documentación, y finaliza con un retorno de carro (CR) y un salto de línea (LF).
 
 Los nombres de **rule** no distinguen entre mayúsculas y minúsculas. Los nombres de las reglas constan de una letra seguida de letras, números y guiones. 
 
