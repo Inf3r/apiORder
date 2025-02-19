@@ -709,7 +709,7 @@ Nota: Para definir la sintaxis del valor del campo, esta especificación utiliza
 
 Se utiliza una extensión #rule de las reglas ABNF para mejorar la legibilidad en las definiciones de algunos valores de campo basados ​​en listas.
 
-Se define una construcción "#", similar a "*", para definir listas de elementos delimitadas por comas. La forma completa es "<n>#<m>elemento" que indica al menos <n> y como máximo <m> elementos, cada uno separado por una sola coma (",") y un espacio en blanco opcional (OWS).
+Se define una construcción "#", similar a "*", para definir listas de elementos delimitadas por comas. La forma completa es "<n>#<m>elemento" que indica al menos ```<n>``` y como máximo ```<m>``` elementos, cada uno separado por una sola coma (",") y un espacio en blanco opcional (OWS).
 
 >Requisitos del remitente
 
@@ -722,7 +722,7 @@ y:
 ```
 #element => [ 1#element ]
 ```
-y por n >= 1 y m > 1
+y por ```n >= 1``` y ```m > 1```:
 ```
 <n>#<m>element => element <n-1>*<m-1>( OWS "," OWS element )
 ```
