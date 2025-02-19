@@ -589,3 +589,9 @@ Cuando se utiliza una URI "https" dentro de un contexto que solicita acceso al r
 Si el servidor responde a dicha solicitud con un mensaje de respuesta HTTP no provisional, entonces esa respuesta se considera una respuesta autorizada a la solicitud del cliente. Sin embargo, tener en cuenta que lo anterior no es el único medio para obtener una respuesta autorizada, ni implica que una respuesta autorizada siempre sea necesaria.
 
 >Verificación de certificado HTTPS
+
+Para establecer una conexión segura para desreferenciar un URI, un cliente DEBE verificar que la identidad del servicio coincida de manera aceptable con el servidor de origen del URI. La verificación de certificados se utiliza para evitar la suplantación de identidad del servidor por parte de un atacante en la ruta o de un atacante que controle la resolución de nombres. Este proceso requiere que un cliente esté configurado con un conjunto de anclajes de confianza.
+
+En general, un cliente DEBE verificar la identidad del servicio mediante el proceso de verificación. El cliente DEBE construir una identidad de referencia a partir del host del servicio: si el host es una dirección IP literal, la identidad de referencia es un ```IP-ID```; de lo contrario, el host es un nombre y la identidad de referencia es un ```DNS-ID```.
+
+
