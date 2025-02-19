@@ -641,7 +641,7 @@ Ejemplo de campo: Foo, Bar
 Ejemplo de campo: Baz
 ```
 
-contiene dos líneas de campo, ambas con el nombre de campo "Campo de ejemplo". La primera línea de campo tiene un valor de línea de campo de "Foo, Bar", mientras que el valor de la segunda línea de campo es "Baz". El valor del campo final para "Campo de ejemplo" es la lista "Foo, Bar, Baz".
+contiene dos líneas de campo, ambas con el nombre de campo "Ejemplo de campo". La primera línea de campo tiene un valor de línea de campo de "Foo, Bar", mientras que el valor de la segunda línea de campo es "Baz". El valor del campo final para "Ejemplo de campo" es la lista "Foo, Bar, Baz".
 
 >Orden de campo
 
