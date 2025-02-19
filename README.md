@@ -704,4 +704,5 @@ Muchos campos (como el tipo de contenido) utilizan una sintaxis común para los 
 Nota: Para definir la sintaxis del valor del campo, esta especificación utiliza una regla ABNF nombrada después del nombre del campo para definir la gramática permitida para el valor de ese campo (después de que dicho valor se haya extraído de la sintaxis de mensajería subyacente y se hayan combinado varias instancias en una lista).
 
 >Reglas comunes para definir valores de campo
+
 >Listas (extensión #rule ABNF)
