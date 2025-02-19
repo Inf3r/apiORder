@@ -726,3 +726,197 @@ y por ```n >= 1``` y ```m > 1```:
 ```
 <n>#<m>element => element <n-1>*<m-1>( OWS "," OWS element )
 ```
+
+>Requisitos del receptor
+
+Los elementos vacíos no contribuyen al recuento de elementos presentes. Un destinatario DEBE analizar e ignorar una cantidad razonable de elementos de lista vacía: suficiente para manejar errores comunes de los remitentes al fusionar valores, pero no tanto como para poder usarlos como un mecanismo de denegación de servicio. En otras palabras, un destinatario DEBE aceptar listas que cumplan con la siguiente sintaxis:
+
+```
+#element => [ element ] *( OWS "," OWS [ element ] )
+```
+
+Tenga en cuenta que debido a la posible presencia de elementos de lista vacíos, el RFC 5234 ABNF no puede imponer la cardinalidad de los elementos de la lista y, en consecuencia, todos los casos se asignan como si no se hubiera especificado ninguna cardinalidad.
+
+Por ejemplo, dadas estas producciones de ABNF:
+
+```
+example-list      = 1#example-list-elmt
+example-list-elmt = token
+```
+
+Entonces los siguientes son valores válidos para la lista de ejemplos (sin incluir las comillas dobles, que están presentes solo para la delimitación):
+
+```
+"foo,bar"
+"foo ,bar,"
+"foo , ,bar,charlie"
+```
+
+Por el contrario, los siguientes valores no serían válidos, ya que la producción de la lista de ejemplo requiere al menos un elemento no vacío:
+
+```
+""
+","
+",   ,"
+```
+
+>Tokens
+
+Los tokens son identificadores textuales cortos que no incluyen espacios en blanco ni delimitadores.
+
+```
+token          = 1*tchar
+
+tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+               / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+               / DIGIT / ALPHA
+               ; any VCHAR, except delimiters
+```
+
+Muchos valores de campos HTTP se definen utilizando componentes de sintaxis comunes, separados por espacios en blanco o caracteres delimitadores específicos. Los delimitadores se eligen del conjunto de caracteres visuales US-ASCII no permitidos en un token (DQUOTE y "(),/:;<=>?@[\]{}").
+
+>Espacio en blanco
+
+Esta especificación utiliza tres reglas para indicar el uso de espacios en blanco lineales: OWS (espacio en blanco opcional), RWS (espacio en blanco requerido) y BWS (espacio en blanco "incorrecto").
+
+La regla OWS se utiliza cuando pueden aparecer cero o más octetos de espacios en blanco lineales. Para elementos de protocolo donde se prefiere el espacio en blanco opcional para mejorar la legibilidad, un remitente DEBE generar el espacio en blanco opcional como un único SP; de lo contrario, un remitente NO DEBE generar espacios en blanco opcionales, excepto cuando sea necesario para sobrescribir elementos de protocolo no válidos o no deseados durante el filtrado de mensajes local.
+
+La regla RWS se utiliza cuando se requiere al menos un octeto de espacio en blanco lineal para separar los tokens de campo. Un remitente DEBE generar RWS como un único SP.
+
+OWS y RWS tienen la misma semántica que un único SP. Cualquier contenido que se sepa que está definido como OWS o RWS PUEDE reemplazarse con un único SP antes de interpretarlo o reenviar el mensaje.
+
+La regla BWS se utiliza cuando la gramática permite espacios en blanco opcionales sólo por razones históricas. Un remitente NO DEBE generar BWS en los mensajes. Un destinatario DEBE analizar esos espacios en blanco incorrectos y eliminarlos antes de interpretar el elemento del protocolo.
+
+BWS no tiene semántica. Cualquier contenido que se sepa que está definido como BWS PUEDE eliminarse antes de interpretarlo o reenviar el mensaje.
+
+```
+OWS            = *( SP / HTAB )
+               ; optional whitespace
+RWS            = 1*( SP / HTAB )
+               ; required whitespace
+BWS            = OWS
+               ; "bad" whitespace
+```
+
+>Cadenas citadas
+
+Una cadena de texto se analiza como un valor único si se cita entre comillas dobles.
+
+```
+quoted-string  = DQUOTE *( qdtext / quoted-pair ) DQUOTE
+qdtext         = HTAB / SP / %x21 / %x23-5B / %x5D-7E / obs-text
+```
+
+El octeto de barra invertida ("\") se puede utilizar como mecanismo de citación de un solo octeto dentro de construcciones de cadena entre comillas y comentarios. Los destinatarios que procesan el valor de una cadena entre comillas DEBEN manejar un par entre comillas como si fuera reemplazado por el octeto que sigue a la barra invertida.
+
+```
+quoted-pair    = "\" ( HTAB / SP / VCHAR / obs-text )
+```
+
+Un remitente NO DEBE generar un par entre comillas en una cadena entre comillas, excepto cuando sea necesario citar DQUOTE y octetos de barra invertida que aparecen dentro de esa cadena. Un remitente NO DEBE generar un par entre comillas en un comentario, excepto cuando sea necesario citar paréntesis ["(" y ")"] y octetos de barra invertida que aparecen dentro de ese comentario.
+
+>Comentarios
+
+Los comentarios se pueden incluir en algunos campos HTTP rodeando el texto del comentario entre paréntesis. Los comentarios solo se permiten en campos que contienen "comentario" como parte de la definición del valor del campo.
+
+```
+comment        = "(" *( ctext / quoted-pair / comment ) ")"
+ctext          = HTAB / SP / %x21-27 / %x2A-5B / %x5D-7E / obs-text
+```
+
+>Parámetros
+
+Los parámetros son instancias de pares nombre/valor; a menudo se utilizan en valores de campo como sintaxis común para agregar información auxiliar a un elemento. Cada parámetro suele estar delimitado por un punto y coma inmediatamente anterior.
+
+```
+parameters      = *( OWS ";" OWS [ parameter ] )
+parameter       = parameter-name "=" parameter-value
+parameter-name  = token
+parameter-value = ( token / quoted-string )
+```
+
+Los nombres de los parámetros no distinguen entre mayúsculas y minúsculas. Los valores de los parámetros pueden distinguir entre mayúsculas y minúsculas o no, según la semántica del nombre del parámetro.
+
+Un valor de parámetro que coincida con la producción del token se puede transmitir como un token o dentro de una cadena entrecomillada. Los valores entrecomillados y no entrecomillados son equivalentes.
+
+Nota: Los parámetros no permiten espacios en blanco (ni siquiera espacios en blanco "incorrectos") alrededor del carácter "=".
+
+>Formatos de fecha/hora
+
+Antes de 1995, los servidores utilizaban tres formatos diferentes para comunicar marcas de tiempo. Por compatibilidad con implementaciones antiguas, las tres se definen acá. El formato preferido es un subconjunto de longitud fija y de zona única de la especificación de fecha y hora utilizada por el formato de mensajes de Internet.
+
+```
+HTTP-date    = IMF-fixdate / obs-date
+```
+
+Un ejemplo del formato preferido es:
+
+```
+Sun, 06 Nov 1994 08:49:37 GMT    ; IMF-fixdate
+```
+
+Ejemplos de los dos formatos obsoletos son:
+
+```
+Sunday, 06-Nov-94 08:49:37 GMT   ; obsolete RFC 850 format
+Sun Nov  6 08:49:37 1994         ; ANSI C's asctime() format
+```
+
+Un destinatario que analiza un valor de marca de tiempo en un campo HTTP DEBE aceptar los tres formatos de fecha HTTP. Cuando un remitente genera un campo que contiene una o más marcas de tiempo definidas como fecha HTTP, el remitente DEBE generar esas marcas de tiempo en el formato de fecha fija del FMI.
+
+Un valor de fecha HTTP representa la hora como una instancia de hora universal coordinada (UTC). Los dos primeros formatos indican UTC mediante la abreviatura de tres letras de la hora media de Greenwich, "GMT", un predecesor del nombre UTC; Se supone que los valores en formato asctime están en UTC.
+
+Un "reloj" es una implementación capaz de proporcionar una aproximación razonable del instante actual en UTC. Una implementación de reloj debería utilizar NTP, o algún protocolo similar, para sincronizarse con UTC.
+
+Formato preferido:
+
+```
+  IMF-fixdate  = day-name "," SP date1 SP time-of-day SP GMT
+  ; fixed length/zone/capitalization subset of the format
+  ; see Section 3.3 of [RFC5322]
+
+  day-name     = %s"Mon" / %s"Tue" / %s"Wed"
+               / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
+
+  date1        = day SP month SP year
+               ; e.g., 02 Jun 1982
+
+  day          = 2DIGIT
+  month        = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr"
+               / %s"May" / %s"Jun" / %s"Jul" / %s"Aug"
+               / %s"Sep" / %s"Oct" / %s"Nov" / %s"Dec"
+  year         = 4DIGIT
+
+  GMT          = %s"GMT"
+
+  time-of-day  = hour ":" minute ":" second
+               ; 00:00:00 - 23:59:60 (leap second)
+
+  hour         = 2DIGIT
+  minute       = 2DIGIT
+  second       = 2DIGIT
+```
+
+Formatos obsoletos:
+
+```
+  obs-date     = rfc850-date / asctime-date
+  rfc850-date  = day-name-l "," SP date2 SP time-of-day SP GMT
+  date2        = day "-" month "-" 2DIGIT
+               ; e.g., 02-Jun-82
+
+  day-name-l   = %s"Monday" / %s"Tuesday" / %s"Wednesday"
+               / %s"Thursday" / %s"Friday" / %s"Saturday"
+               / %s"Sunday"
+  asctime-date = day-name SP date3 SP time-of-day SP year
+  date3        = month SP ( 2DIGIT / ( SP 1DIGIT ))
+               ; e.g., Jun  2
+```
+
+La fecha HTTP distingue entre mayúsculas y minúsculas. Un remitente NO DEBE generar espacios en blanco adicionales en una fecha HTTP más allá de lo incluido específicamente como SP en la gramática. La semántica de nombre del día, mes, año y hora del día es la misma que la definida para las construcciones del formato de mensaje de Internet con el nombre correspondiente.
+
+Los destinatarios de un valor de marca de tiempo en formato de fecha rfc850, que utiliza un año de dos dígitos, DEBEN interpretar una marca de tiempo que parece tener más de 50 años en el futuro como representativa del año más reciente del pasado que tuvo los mismos dos últimos dígitos.
+
+Se recomienda a los destinatarios de los valores de las marcas de tiempo que sean sólidos al analizar las marcas de tiempo, a menos que la definición del campo lo restrinja. Por ejemplo, en ocasiones los mensajes se reenvían a través de HTTP desde una fuente que no es HTTP y que podría generar cualquiera de las especificaciones de fecha y hora definidas por el formato de mensajes de Internet.
+
+Nota: Los requisitos HTTP para formatos de marca de tiempo se aplican solo a su uso dentro del flujo de protocolo. No es necesario que las implementaciones utilicen estos formatos para la presentación del usuario, el registro de solicitudes, etc.
