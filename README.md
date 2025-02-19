@@ -677,5 +677,31 @@ field-vchar    = VCHAR / obs-text
 obs-text       = %x80-FF
 ```
 
+Un valor de campo no incluye espacios en blanco iniciales o finales. Cuando una versión específica de HTTP permite que dichos espacios en blanco aparezcan en un mensaje, una implementación de análisis de campos DEBE excluir dichos espacios en blanco antes de evaluar el valor del campo.
 
+Los valores de campo generalmente están restringidos al rango de caracteres US-ASCII. Los campos que necesiten una mayor variedad de caracteres pueden utilizar una codificación. Históricamente, HTTP permitía contenido de campo con texto en el juego de caracteres ISO-8859-1, y admitía otros juegos de caracteres solo mediante el uso de la codificación. Las especificaciones para campos recién definidos DEBEN limitar sus valores a octetos US-ASCII visibles (VCHAR), SP y HTAB. Un destinatario DEBE tratar otros octetos permitidos en el contenido del campo (es decir, texto obs) como datos opacos.
 
+Los valores de campo que contienen caracteres CR, LF o NUL no son válidos y son peligrosos debido a las distintas formas en que las implementaciones pueden analizar e interpretar esos caracteres; un destinatario de CR, LF o NUL dentro de un valor de campo DEBE rechazar el mensaje o reemplazar cada uno de esos caracteres con SP antes de continuar procesando o reenviando ese mensaje. Los valores de campo que contienen otros caracteres CTL tampoco son válidos; sin embargo, los destinatarios PUEDEN conservar dichos caracteres en aras de la solidez cuando aparecen dentro de un contexto seguro (por ejemplo, una cadena entrecomillada específica de la aplicación que no será procesada por ningún analizador HTTP posterior).
+
+Los campos que solo anticipan un único miembro como valor de campo se denominan "campos únicos".
+
+Los campos que permiten varios miembros como valor de campo se denominan "campos basados ​​en listas". La extensión del operador de lista se utiliza como notación común para definir valores de campo que pueden contener varios miembros.
+
+Debido a que las comas (",") se utilizan como delimitador entre miembros, deben tratarse con cuidado si se permiten como datos dentro de un miembro. Esto es válido tanto para los campos basados ​​en listas como para los campos singleton, ya que un campo singleton puede enviarse por error con varios miembros y la detección de dichos errores mejora la interoperabilidad. Los campos que esperan contener una coma dentro de un miembro, como dentro de un elemento de fecha HTTP o de referencia URI, deben definirse con delimitadores alrededor de ese elemento para distinguir cualquier coma dentro de esos datos de posibles separadores de lista.
+
+Por ejemplo, una fecha textual y un URI (cualquiera de los cuales podría contener una coma) podrían incluirse de forma segura en valores de campo basados ​​en listas como estos:
+
+```
+Example-URIs: "http://example.com/a.html,foo",
+              "http://without-a-comma.example.com/"
+Example-Dates: "Sat, 04 May 1996", "Wed, 14 Sep 2005"
+```
+
+Tenga en cuenta que los delimitadores de comillas dobles casi siempre se utilizan con la producción de cadenas entre comillas; el uso de una sintaxis diferente entre comillas dobles probablemente provocará una confusión innecesaria.
+
+Muchos campos (como el tipo de contenido) utilizan una sintaxis común para los parámetros que permite la sintaxis tanto sin comillas (token) como entre comillas (cadena entre comillas) para un valor de parámetro. El uso de una sintaxis común permite a los destinatarios reutilizar los componentes del analizador existentes. Al permitir ambas formas, el significado del valor de un parámetro debe ser el mismo ya sea que se reciba como un token o como una cadena entre comillas.
+
+Nota: Para definir la sintaxis del valor del campo, esta especificación utiliza una regla ABNF nombrada después del nombre del campo para definir la gramática permitida para el valor de ese campo (después de que dicho valor se haya extraído de la sintaxis de mensajería subyacente y se hayan combinado varias instancias en una lista).
+
+>Reglas comunes para definir valores de campo
+>Listas (extensión #rule ABNF)
