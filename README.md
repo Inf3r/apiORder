@@ -594,4 +594,88 @@ Para establecer una conexión segura para desreferenciar un URI, un cliente DEBE
 
 En general, un cliente DEBE verificar la identidad del servicio mediante el proceso de verificación. El cliente DEBE construir una identidad de referencia a partir del host del servicio: si el host es una dirección IP literal, la identidad de referencia es un ```IP-ID```; de lo contrario, el host es un nombre y la identidad de referencia es un ```DNS-ID```.
 
+Los clientes NO DEBEN utilizar una identidad de referencia de tipo CN-ID, los clientes más antiguos pueden utilizar una identidad de referencia de tipo CN-ID.
+
+Un cliente puede estar configurado especialmente para aceptar una forma alternativa de verificación de identidad del servidor. Por ejemplo, un cliente puede conectarse a un servidor cuya dirección y nombre de host son dinámicos, con la expectativa de que el servicio presente un certificado específico (o un certificado que coincida con alguna identidad de referencia definida externamente) en lugar de uno que coincida con el origen del URI de destino.
+
+En casos especiales, puede ser apropiado que un cliente simplemente ignore la identidad del servidor, pero debe entenderse que esto deja una conexión abierta a un ataque activo.
+
+Si el certificado no es válido para el origen de la URI de destino, un agente de usuario DEBE obtener confirmación del usuario antes de continuar, o finalizar la conexión con un error de certificado incorrecto. Los clientes automatizados DEBEN registrar el error en un registro de auditoría adecuado (si está disponible) y DEBEN finalizar la conexión (con un error de certificado incorrecto). Los clientes automatizados PUEDEN proporcionar una configuración que deshabilite esta verificación, pero DEBEN proporcionar una configuración que la habilite.
+
+>Identidad de referencia de IP-ID
+
+Un servidor que se identifica mediante una dirección IP literal en el campo "host" de un URI "https" tiene una identidad de referencia de tipo IP-ID. Una dirección IP versión 4 utiliza la regla ABNF "IPv4address" y una dirección IP versión 6 utiliza la producción "IP-literal" con la opción "IPv6address". Una identidad de referencia de tipo IP-ID contiene los bytes decodificados de la dirección IP.
+
+Una dirección IP versión 4 tiene 4 octetos y una dirección IP versión 6 tiene 16 octetos. El uso de IP-ID no está definido para ninguna otra versión IP. La opción iPAddress en la extensión subjectAltName del certificado no incluye explícitamente la versión IP y, por lo tanto, depende de la longitud de la dirección para distinguir las versiones.
+
+Una identidad de referencia de tipo ```IP-ID coincide si la dirección es idéntica a un valor iPAddress de la extensión subjectAltName del certificado```.
+
+>Campos
+
+HTTP utiliza "campos" para proporcionar datos en forma de pares nombre/valor extensibles con un espacio de nombres de clave registrado. Los campos se envían y reciben dentro de las secciones de encabezado y final de los mensajes.
+
+>Nombres de campos
+
+Un nombre de campo etiqueta el valor de campo correspondiente como si tuviera la semántica definida por ese nombre. Por ejemplo, el campo de encabezado de fecha que contiene la marca de tiempo de origen del mensaje en el que aparece.
+
+```nombre-campo = token```
+  
+Los nombres de campo no distinguen entre mayúsculas y minúsculas y deben registrarse en el "Registro de nombres de campo del Protocolo de transferencia de hipertexto (HTTP)".
+
+La interpretación de un campo no cambia entre versiones menores de la misma versión principal de HTTP, aunque el comportamiento predeterminado de un destinatario en ausencia de dicho campo puede cambiar. A menos que se especifique lo contrario, los campos se definen para todas las versiones de HTTP. En particular, los campos Host y Connection deben ser reconocidos por todas las implementaciones de HTTP, independientemente de si anuncian o no su conformidad con HTTP/1.1.
+
+Se pueden introducir nuevos campos sin cambiar la versión del protocolo si su semántica definida permite que los destinatarios que no los reconocen puedan ignorarlos de forma segura.
+
+Un proxy DEBE reenviar campos de encabezado no reconocidos a menos que el nombre del campo esté incluido en el campo de encabezado de conexión, o que el proxy esté configurado específicamente para bloquear o transformar de otro modo dichos campos. Otros destinatarios DEBEN ignorar los campos de encabezado y de final no reconocidos. El cumplimiento de estos requisitos permite ampliar la funcionalidad de HTTP sin actualizar ni eliminar intermediarios implementados.
+
+>Líneas de campo y valor de campo combinado
+
+Las secciones de campo se componen de cualquier número de "líneas de campo", cada una con un "nombre de campo" que lo identifica, y un "valor de línea de campo" que transmite datos para esa instancia implementada.
+
+Cuando un nombre de campo solo está presente una vez en una sección, el "valor de campo" combinado para ese campo consiste en el valor de la línea de campo correspondiente. Cuando un nombre de campo se repite dentro de una sección, su valor de campo combinado consiste en la lista de valores de línea de campo correspondientes dentro de esa sección, concatenados en orden, con cada valor de línea de campo separado por una coma.
+
+Por ejemplo, esta sección:
+
+```
+Ejemplo de campo: Foo, Bar
+Ejemplo de campo: Baz
+```
+
+contiene dos líneas de campo, ambas con el nombre de campo "Campo de ejemplo". La primera línea de campo tiene un valor de línea de campo de "Foo, Bar", mientras que el valor de la segunda línea de campo es "Baz". El valor del campo final para "Campo de ejemplo" es la lista "Foo, Bar, Baz".
+
+>Orden de campo
+
+Un destinatario PUEDE combinar múltiples líneas de campo dentro de una sección de campo que tienen el mismo nombre de campo en una línea de campo, sin cambiar la semántica del mensaje, agregando cada valor de línea de campo posterior al valor de línea de campo inicial en orden, separados por una coma (",") y espacios en blanco opcionales (OWS). Para mantener la coherencia, utilzar la coma SP.
+
+Por lo tanto, el orden en que se reciben las líneas de campo con el mismo nombre es importante para la interpretación del valor del campo; un proxy NO DEBE cambiar el orden de estos valores de línea de campo al reenviar un mensaje.
+
+Esto significa que, aparte de la conocida excepción que se indica a continuación, un remitente NO DEBE generar múltiples líneas de campo con el mismo nombre en un mensaje (ya sea en los encabezados o en los finales) ni agregar una línea de campo cuando ya existe una línea de campo con el mismo nombre en el mensaje, a menos que la definición de ese campo permita que se recombinen múltiples valores de líneas de campo como una lista separada por comas (es decir, al menos una alternativa de la definición del campo permite una lista separada por comas lista, como una regla ABNF de #(valores).
+
+Nota: En la práctica, el campo de encabezado "Set-Cookie" suele aparecer en un mensaje de respuesta en varias líneas de campo y no utiliza la sintaxis de lista, lo que viola los requisitos anteriores en varias líneas de campo con el mismo nombre de campo. Dado que no se puede combinar en un único valor de campo, los destinatarios deben manejar "Set-Cookie" como un caso especial al procesar los campos.
+
+El orden en el que se reciben en una sección las líneas de campo con diferentes nombres de campo no es significativo. Sin embargo, es una buena práctica enviar primero los campos de encabezado que contienen datos de control adicionales, como Host en solicitudes y Fecha en respuestas, para que las implementaciones puedan decidir cuándo no manejar un mensaje lo antes posible.
+
+Un servidor NO DEBE aplicar una solicitud al recurso de destino hasta que reciba la sección completa del encabezado de la solicitud, ya que las líneas posteriores del campo del encabezado pueden incluir condicionales, credenciales de autenticación o campos de encabezado duplicados deliberadamente engañosos que podrían afectar el procesamiento de la solicitud.
+
+>Límites de campo
+
+HTTP no impone un límite predefinido a la longitud de cada línea de campo, valor de campo o a la longitud de un encabezado o sección final en su conjunto. En la práctica se encuentran varias limitaciones ad hoc en longitudes individuales, a menudo dependiendo de la semántica del campo específico.
+
+Un servidor que recibe una línea de campo de encabezado de solicitud, un valor de campo o un conjunto de campos más grande de lo que desea procesar DEBE responder con un código de estado 4xx (Error de cliente) apropiado. Ignorar dichos campos de encabezado aumentaría la vulnerabilidad del servidor para solicitar ataques de contrabando.
+
+Un cliente PUEDE descartar o truncar líneas de campo recibidas que sean más grandes de lo que el cliente desea procesar si la semántica del campo es tal que los valores eliminados se pueden ignorar de manera segura sin cambiar el marco del mensaje o la semántica de la respuesta.
+
+>Valores de campo
+
+Los valores de los campos HTTP constan de una secuencia de caracteres en un formato definido por la gramática del campo. La gramática de cada campo generalmente se define usando ABNF.
+
+```
+field-value    = *field-content
+field-content  = field-vchar
+                 [ 1*( SP / HTAB / field-vchar ) field-vchar ]
+field-vchar    = VCHAR / obs-text
+obs-text       = %x80-FF
+```
+
+
 
