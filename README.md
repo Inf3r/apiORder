@@ -706,3 +706,23 @@ Nota: Para definir la sintaxis del valor del campo, esta especificación utiliza
 >Reglas comunes para definir valores de campo
 
 >Listas (extensión #rule ABNF)
+
+Se utiliza una extensión #rule de las reglas ABNF para mejorar la legibilidad en las definiciones de algunos valores de campo basados ​​en listas.
+
+Se define una construcción "#", similar a "*", para definir listas de elementos delimitadas por comas. La forma completa es "<n>#<m>elemento" que indica al menos <n> y como máximo <m> elementos, cada uno separado por una sola coma (",") y un espacio en blanco opcional (OWS).
+
+>Requisitos del remitente
+
+En cualquier producción que utilice la construcción de lista, un remitente NO DEBE generar elementos de lista vacíos. En otras palabras, un remitente debe generar listas que satisfagan la siguiente sintaxis:
+
+```
+ 1#element => element *( OWS "," OWS element )
+```
+y:
+```
+#element => [ 1#element ]
+```
+y por n >= 1 y m > 1
+```
+<n>#<m>element => element <n-1>*<m-1>( OWS "," OWS element )
+```
