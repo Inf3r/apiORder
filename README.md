@@ -807,13 +807,13 @@ quoted-string  = DQUOTE *( qdtext / quoted-pair ) DQUOTE
 qdtext         = HTAB / SP / %x21 / %x23-5B / %x5D-7E / obs-text
 ```
 
-El octeto de barra invertida ("\") se puede utilizar como mecanismo de citación de un solo octeto dentro de construcciones de cadena entre comillas y comentarios. Los destinatarios que procesan el valor de una cadena entre comillas DEBEN manejar un par entre comillas como si fuera reemplazado por el octeto que sigue a la barra invertida.
+El octeto de barra invertida ```\``` se puede utilizar como mecanismo de citación de un solo octeto dentro de construcciones de cadena entre comillas y comentarios. Los destinatarios que procesan el valor de una cadena entre comillas DEBEN manejar un par entre comillas como si fuera reemplazado por el octeto que sigue a la barra invertida.
 
 ```
 quoted-pair    = "\" ( HTAB / SP / VCHAR / obs-text )
 ```
 
-Un remitente NO DEBE generar un par entre comillas en una cadena entre comillas, excepto cuando sea necesario citar DQUOTE y octetos de barra invertida que aparecen dentro de esa cadena. Un remitente NO DEBE generar un par entre comillas en un comentario, excepto cuando sea necesario citar paréntesis ["(" y ")"] y octetos de barra invertida que aparecen dentro de ese comentario.
+Un remitente NO DEBE generar un par entre comillas en una cadena entre comillas, excepto cuando sea necesario citar DQUOTE y octetos de barra invertida que aparecen dentro de esa cadena. Un remitente NO DEBE generar un par entre comillas en un comentario, excepto cuando sea necesario citar paréntesis ```["("``` y ```")"]``` y octetos de barra invertida que aparecen dentro de ese comentario.
 
 >Comentarios
 
