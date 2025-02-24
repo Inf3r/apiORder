@@ -1074,3 +1074,92 @@ Un destinatario con un reloj que recibe un mensaje de respuesta sin un campo de 
 Un destinatario con un reloj que recibe una respuesta con un valor de campo de encabezado de fecha no válido PUEDE reemplazar ese valor con la hora en que se recibió la respuesta.
 
 Un agente de usuario PUEDE enviar un campo de encabezado de Fecha en una solicitud, aunque generalmente no lo hará a menos que crea que transmite información útil al servidor. Por ejemplo, las aplicaciones personalizadas de HTTP pueden transmitir una fecha si se espera que el servidor ajuste su interpretación de la solicitud del usuario en función de las diferencias entre los relojes del agente de usuario y del servidor.
+
+>Trailer
+
+El campo de encabezado "Trailer" proporciona una lista de nombres de campos que el remitente prevé enviar como campos de tráiler dentro de ese mensaje. Esto permite que el destinatario se prepare para recibir los metadatos indicados antes de comenzar a procesar el contenido.
+
+```
+Trailer = #field-name
+```
+
+Por ejemplo, un remitente puede indicar que se calculará una firma a medida que se transmite el contenido, y proporcionar la firma final como un campo de tráiler. Esto permite que un destinatario realice la misma verificación sobre la marcha mientras recibe el contenido.¶
+
+Un remitente que pretende generar uno o más campos de tráiler en un mensaje DEBERÍA generar un campo de encabezado de tráiler en la sección de encabezado de ese mensaje para indicar qué campos podrían estar presentes en los tráileres.
+
+Si un intermediario descarta la sección del tráiler en tránsito, el campo Trailer podría proporcionar una pista de qué metadatos se perdieron, aunque no hay garantía de que un remitente de Trailer siempre continúe enviando los campos nombrados.
+
+>Enrutamiento de mensajes HTTP
+
+El enrutamiento de mensajes de solicitud HTTP lo determina cada cliente en función del recurso de destino, la configuración del proxy del cliente y el establecimiento o la reutilización de una conexión entrante. El enrutamiento de respuesta correspondiente sigue la misma cadena de conexión hasta el cliente.
+
+>Determinación del recurso de destino
+
+Aunque el protocolo HTTP se utiliza en una amplia variedad de aplicaciones, la mayoría de los clientes dependen del mismo mecanismo de identificación de recursos y técnicas de configuración que los navegadores web de propósito general. Incluso cuando las opciones de comunicación están codificadas en la configuración de un cliente, podemos pensar en su efecto combinado como una referencia URI.
+
+Una referencia URI se resuelve a su forma absoluta para obtener el "URI de destino". El URI de destino excluye el componente de fragmento de la referencia, si lo hay, ya que los identificadores de fragmentos están reservados para el procesamiento del lado del cliente.
+
+Para realizar una acción en un "recurso de destino", el cliente envía un mensaje de solicitud que contiene suficientes componentes de su URI de destino analizado para permitir que los destinatarios identifiquen ese mismo recurso.  Por razones históricas, los componentes de la URI de destino analizados, denominados colectivamente "destino de la solicitud", se envían dentro de los datos de control del mensaje y el campo de encabezado del host.
+
+Hay dos casos inusuales en los que los componentes del destino de la solicitud están en un formato específico del método:
+
+* Para CONNECT el destino de la solicitud es el nombre del host y el número de puerto del destino del túnel, separados por dos puntos.
+
+* Para OPTIONS el destino de la solicitud puede ser un solo asterisco ("*").
+
+Consultar las definiciones de los métodos respectivos para obtener más detalles. Estos formularios NO DEBEN usarse con otros métodos.
+
+Al recibir la solicitud de un cliente, un servidor reconstruye la URI de destino a partir de los componentes recibidos de acuerdo con su configuración local y el contexto de conexión entrante. Esta reconstrucción es específica para cada versión principal del protocolo. Por ejemplo, la Sección 3.3 de [HTTP/1.1], define cómo un servidor determina la URI de destino de una solicitud HTTP/1.1.
+
+Nota: Las especificaciones anteriores definieron la URI de destino recompuesta como un concepto distinto, la "URI de solicitud efectiva".
+
+>Host y :authority
+
+El campo de encabezado "Host" en una solicitud proporciona la información del host y del puerto de la URI de destino, lo que permite al servidor de origen distinguir entre recursos mientras atiende solicitudes para múltiples nombres de host.
+
+En HTTP/2 y HTTP/3, el campo de encabezado Host es, en algunos casos, reemplazado por el campo de pseudoencabezado ":authority" de los datos de control de una solicitud.
+
+```
+Host = uri-host [ ":" port ]
+```
+
+La información de autoridad de la URI de destino es fundamental para gestionar una solicitud. Un agente de usuario DEBE generar un campo de encabezado Host en una solicitud a menos que envíe esa información como un campo de pseudoencabezado ":authority".
+
+Un agente de usuario que envía Host DEBE enviarlo como el primer campo en la sección de encabezado de una solicitud.
+
+Por ejemplo, una solicitud GET al servidor de origen para 
+
+```
+http://www.example.org/pub/WWW/ 
+```
+
+comenzaría con:
+
+```
+GET /pub/WWW/ HTTP/1.1
+Host: www.example.org
+```
+
+Dado que la información del host y del puerto actúan como un mecanismo de enrutamiento a nivel de aplicación, es un objetivo frecuente para el malware que busca envenenar un caché compartido o redirigir una solicitud a un servidor no deseado. Un proxy de interceptación es particularmente vulnerable si se basa en la información del host y del puerto para redirigir solicitudes a servidores internos, o para usarla como clave de caché en un caché compartido, sin verificar primero que la conexión interceptada esté dirigida a una dirección IP válida para ese host.
+
+>Enrutamiento de solicitudes entrantes
+
+Una vez que se determinan la URI de destino y su origen, un cliente decide si es necesaria una solicitud de red para lograr la semántica deseada y, de ser así, a dónde debe dirigirse esa solicitud.
+
+>A un caché
+
+Si el cliente tiene un caché y este puede satisfacer la solicitud, entonces la solicitud generalmente se dirige ahí primero.
+
+>A un proxy
+
+Si un caché no satisface la solicitud, un cliente típico comprobará su configuración para determinar si se debe utilizar un proxy para satisfacer la solicitud. La configuración del proxy depende de la implementación, pero a menudo se basa en la coincidencia de prefijos de URI, la coincidencia de autoridad selectiva o ambas, y el proxy en sí mismo suele identificarse mediante un URI "http" o "https".
+
+Si se aplica un proxy "http" o "https", el cliente se conecta de forma entrante estableciendo (o reutilizando) una conexión con ese proxy y luego enviándole un mensaje de solicitud HTTP que contiene un destino de solicitud que coincide con el URI de destino del cliente.
+
+>Al origen
+
+Si no se aplica ningún proxy, un cliente típico invocará una rutina de controlador (específica para el esquema de la URI de destino) para obtener acceso al recurso identificado. La forma en que esto se logra depende del esquema de la URI de destino y se define por su especificación asociada.
+
+La sección 4.3.2 define cómo obtener acceso a un recurso "http" estableciendo (o reutilizando) una conexión entrante al servidor de origen identificado y luego enviándole un mensaje de solicitud HTTP que contenga un destino de solicitud que coincida con la URI de destino del cliente.
+
+La sección 4.3.3 define cómo obtener acceso a un recurso "https" estableciendo (o reutilizando) una conexión segura entrante a un servidor de origen que tenga autoridad para el origen identificado y luego enviándole un mensaje de solicitud HTTP que contenga un destino de solicitud que coincida con la URI de destino del cliente.
