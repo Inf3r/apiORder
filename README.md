@@ -968,3 +968,79 @@ Un destinatario que recibe un mensaje con un número de versión principal que i
 
 >Campos de encabezado
 
+Los campos que se envían o reciben antes del contenido se denominan "campos de encabezado" (o simplemente "encabezados", coloquialmente).
+
+La "sección de encabezado" de un mensaje consta de una secuencia de líneas de campos de encabezado. Cada campo de encabezado puede modificar o ampliar la semántica del mensaje, describir al remitente, definir el contenido o proporcionar contexto adicional.
+
+Nota: Nos referimos a los campos nombrados específicamente como "campos de encabezado" cuando solo se permite enviarlos en la sección de encabezado.
+
+>Contenido
+
+Los mensajes HTTP, a menudo transfieren una representación completa o parcial como el "contenido" del mensaje: un flujo de octetos enviados después de la sección de encabezado, tal como lo delinea el marco del mensaje.
+
+Esta definición abstracta de contenido refleja los datos después de que se han extraído del marco del mensaje. Por ejemplo, un cuerpo de mensaje HTTP/1.1 podría consistir en un flujo de datos codificados con la codificación de transferencia fragmentada (una secuencia de fragmentos de datos, un fragmento de longitud cero y una sección final), mientras que el contenido de ese mismo mensaje incluye solo el flujo de datos después de que se ha decodificado la codificación de transferencia; no incluye las longitudes de los fragmentos, la sintaxis de marco fragmentado ni los campos finales.
+
+Nota: Algunos nombres de campos tienen el prefijo ```Content-```. Esta es una convención informal; mientras que algunos de estos campos se refieren al contenido del mensaje, como se define anteriormente, otros tienen como alcance la representación seleccionada.
+
+>Semántica del contenido
+
+El propósito del contenido de una solicitud se define mediante la semántica del método. Por ejemplo, una representación en el contenido de una solicitud PUT representa el estado deseado del recurso de destino después de que la solicitud se aplica con éxito, mientras que una representación en el contenido de una solicitud POST representa la información que debe procesar el recurso de destino.
+
+En una respuesta, el propósito del contenido se define por el método de solicitud, el código de estado de la respuesta y los campos de respuesta que describen ese contenido. Por ejemplo, el contenido de una respuesta 200 (OK) a GET representa el estado actual del recurso de destino, como se observa en el momento de la fecha de origen del mensaje, mientras que el contenido del mismo código de estado en una respuesta a POST podría representar el resultado del procesamiento o el nuevo estado del recurso de destino después de aplicar el procesamiento.
+
+El contenido de una respuesta 206 (Contenido parcial) a GET contiene una sola parte de la representación seleccionada o un cuerpo de mensaje de varias partes que contiene varias partes de esa representación.
+
+Los mensajes de respuesta con un código de estado de error generalmente contienen contenido que representa la condición del error, de modo que el contenido describe el estado del error y los pasos sugeridos para resolverlo.
+
+Las respuestas al método de solicitud HEAD nunca incluyen contenido; los campos de encabezado de respuesta asociados indican solo cuáles habrían sido sus valores si el método de solicitud hubiera sido GET.
+
+Las respuestas 2xx (exitosas) a un método de solicitud CONNECT cambian la conexión al modo túnel en lugar de tener contenido.
+
+Todas las respuestas 1xx (Informativo), 204 (Sin contenido) y 304 (No modificado) no incluyen contenido.
+
+Todas las demás respuestas incluyen contenido, aunque ese contenido puede tener una extensión cero.
+
+>Identificar contenido
+
+Cuando se transfiere una representación completa o parcial como contenido de un mensaje, a menudo es deseable que el remitente proporcione, o que el destinatario determine, un identificador para un recurso correspondiente a esa representación específica. Por ejemplo, un cliente que realiza una solicitud GET en un recurso para "el informe meteorológico actual" podría querer un identificador específico del contenido devuelto (por ejemplo, "informe meteorológico de Laguna Beach en 20210720T1711"). Esto puede resultar útil para compartir o marcar contenido de recursos que se espera que tengan representaciones cambiantes con el tiempo.
+
+Para un mensaje de solicitud:
+
+* Si la solicitud tiene un campo de encabezado ```Content-Location```, entonces el remitente afirma que el contenido es una representación del recurso identificado por el valor del campo ```Content-Location```. Sin embargo, no se puede confiar en dicha afirmación a menos que pueda verificarse por otros medios (no definidos en esta especificación). La información aún podría ser útil para los enlaces del historial de revisiones.
+De lo contrario, HTTP no identifica el contenido, pero es posible que se proporcione un identificador más específico dentro del propio contenido.
+
+Para un mensaje de respuesta, se aplican las siguientes reglas en orden hasta que se encuentra una coincidencia:
+
+* Si el método de solicitud es HEAD o el código de estado de respuesta es 204 (Sin contenido) o 304 (No modificado), no hay contenido en la respuesta.
+* Si el método de solicitud es GET y el código de estado de respuesta es 200 (OK), el contenido es una representación del recurso de destino.
+* Si el método de solicitud es GET y el código de estado de respuesta es 203 (Información no autorizada), el contenido es una representación potencialmente modificada o mejorada del recurso de destino proporcionado por un intermediario.
+* Si el método de solicitud es GET y el código de estado de respuesta es 206 (Contenido parcial), el contenido es una o más partes de una representación del recurso de destino.
+* Si la respuesta tiene un campo de encabezado ```Content-Location``` y el valor de su campo es una referencia al mismo URI que el URI de destino, el contenido es una representación del recurso de destino.
+* Si la respuesta tiene un campo de encabezado ```Content-Location``` y el valor de su campo es una referencia a un URI diferente del URI de destino, entonces el remitente afirma que el contenido es una representación del recurso identificado por el valor del campo ```Content-Location```. Sin embargo, no se puede confiar en dicha afirmación a menos que pueda verificarse por otros medios (no definidos en esta especificación).
+De lo contrario, HTTP no identifica el contenido, pero es posible que se proporcione un identificador más específico dentro del propio contenido.
+
+>Campos de trailers
+
+Los campos que se encuentran dentro de una "sección de trailer" se denominan "campos de trailers" (o simplemente "trailers", coloquialmente). Los campos de trailers pueden resultar útiles para proporcionar comprobaciones de integridad de mensajes, firmas digitales, métricas de entrega o información de estado de posprocesamiento. Estos, deben procesarse y almacenarse por separado de los campos de la sección del encabezado para evitar contradecir la semántica del mensaje conocida en el momento en que se completó la sección del encabezado. La presencia o ausencia de ciertos campos de encabezado podría afectar las decisiones tomadas para el enrutamiento o procesamiento del mensaje en su conjunto antes de recibir los avances; esas elecciones no pueden deshacerse con el descubrimiento posterior de campos de trailers.
+
+>Limitaciones en el uso de remolques
+
+Una sección de trailer solo es posible cuando la admite la versión de HTTP en uso y está habilitada por un mecanismo de encuadre explícito. Por ejemplo, la codificación de transferencia fragmentada en HTTP/1.1 permite enviar una sección de avance después del contenido.
+
+Muchos campos no se pueden procesar fuera de la sección del encabezado porque su evaluación es necesaria antes de recibir el contenido, como aquellos que describen el encuadre del mensaje, el enrutamiento, la autenticación, los modificadores de solicitudes, los controles de respuesta o el formato del contenido. 
+
+Un remitente NO DEBE generar un campo de trailer a menos que sepa que la definición del nombre del campo de encabezado correspondiente permite que el campo se envíe en trailers.
+
+Los campos de trailers pueden resultar difíciles de procesar para los intermediarios que reenvían mensajes de una versión de protocolo a otra. Si el mensaje completo se puede almacenar en tránsito, algunos intermediarios podrían fusionar los campos de trailers en la sección del encabezado (según corresponda) antes de reenviarlo. Sin embargo, en la mayoría de los casos, los trailers simplemente se desechan. Un destinatario NO DEBE fusionar un campo de trailer en una sección de encabezado a menos que comprenda la definición del campo de encabezado correspondiente y esa definición permita y defina explícitamente cómo los valores del campo de trailer se pueden fusionar de forma segura.
+
+La presencia de la palabra clave "trailers" en el campo de encabezado TE de una solicitud, indica que el cliente está dispuesto a aceptar campos de trailer, en su nombre y en el de cualquier cliente descendente. Para solicitudes de un intermediario, esto implica que todos los clientes posteriores están dispuestos a aceptar campos finales en la respuesta reenviada. Tenga en cuenta que la presencia de "trailers" no significa que los clientes procesarán ningún campo de avance particular en la respuesta; sólo que ninguno de los clientes dejará caer la(s) sección(es) del/los trailer/s.
+
+Debido a la posibilidad de que los campos de trailer se descarten en tránsito, un servidor NO DEBE generar campos de trailer que considere necesarios para que los reciba el agente de usuario.
+
+>Procesamiento de campos de trailer
+
+El campo de encabezado "Tráiler" se puede enviar para indicar los campos que probablemente se enviarán en la sección de trailer, lo que permite a los destinatarios prepararse para su recepción antes de procesar el contenido. Por ejemplo, esto podría ser útil si un nombre de campo indica que se debe calcular una suma de verificación dinámica a medida que se recibe el contenido y luego verificarse inmediatamente al recibir el valor del campo final.
+
+Al igual que los campos de encabezado, los campos finales con el mismo nombre se procesan en el orden en que se reciben; varias líneas de campo de cola con el mismo nombre tienen la semántica equivalente a agregar los valores múltiples como una lista de miembros. Los campos finales que podrían generarse más de una vez durante un mensaje DEBEN definirse como un campo basado en lista incluso si cada valor de miembro solo se procesa una vez por línea de campo recibida.
+
+Al final de un mensaje, un destinatario PUEDE tratar el conjunto de campos finales recibidos como una estructura de datos de pares de nombre/valor, similar (pero separada) de los campos de encabezado. Se pueden definir expectativas de procesamiento adicionales, si las hay, dentro de la especificación de campo para un campo destinado a uso en remolques.
