@@ -1178,3 +1178,34 @@ Todas las respuestas, independientemente del código de estado (incluidas las re
 
 Un cliente que recibe una respuesta mientras todavía está enviando la solicitud asociada DEBERÍA continuar enviando esa solicitud a menos que reciba una indicación explícita.
 
+>Reenvío de mensajes
+
+Los intermediarios pueden cumplir una variedad de funciones en el procesamiento de solicitudes y respuestas HTTP. Algunos intermediarios se utilizan para mejorar el rendimiento o la disponibilidad. Otros se utilizan para el control de acceso o para filtrar contenido. Dado que un flujo HTTP tiene características similares a una arquitectura de canalización y filtro, no existen límites inherentes en cuanto a la medida en que un intermediario puede mejorar (o interferir) con cualquier dirección del flujo.
+
+Se espera que los intermediarios reenvíen mensajes incluso cuando no se reconocen elementos del protocolo (por ejemplo, nuevos métodos, códigos de estado o nombres de campo), ya que eso preserva la extensibilidad para los destinatarios posteriores.
+
+Un intermediario que no actúe como un túnel DEBE implementar el campo de encabezado Connection, y excluir del reenvío los campos que solo están destinados a la conexión entrante.
+
+Un intermediario NO DEBE reenviarse un mensaje a sí mismo a menos que esté protegido de un bucle de solicitud infinito.  En general, un intermediario debe reconocer sus propios nombres de servidor, incluidos los alias, las variaciones locales o las direcciones IP literales, y responder a dichas solicitudes directamente.
+
+Un mensaje HTTP se puede analizar como un flujo para su procesamiento incremental o reenvío en sentido descendente. Sin embargo, los remitentes y los destinatarios no pueden confiar en la entrega incremental de mensajes parciales, ya que algunas implementaciones almacenarán en búfer o retrasarán el reenvío de mensajes por el bien de la eficiencia de la red, los controles de seguridad o las transformaciones de contenido.
+
+>Conexión
+
+El campo de encabezado ```Connection``` permite al remitente enumerar las opciones de control deseadas para la conexión actual.
+
+```
+Connection        = #connection-option 
+connection-option = token
+```
+
+Las opciones de conexión no distinguen entre mayúsculas y minúsculas.
+
+Cuando se utiliza un campo distinto de Conexión para proporcionar información de control para o sobre la conexión actual, el remitente DEBE incluir el nombre del campo correspondiente dentro del campo de encabezado de Conexión.  Tener en cuenta que algunas versiones de HTTP prohíben el uso de campos para dicha información y, por lo tanto, no permiten el campo Connection.
+
+Los intermediarios DEBEN analizar un campo de encabezado Connection recibido antes de que se reenvíe un mensaje y, para cada opción de conexión en este campo, eliminar cualquier campo de encabezado o tráiler del mensaje con el mismo nombre que la opción de conexión y, luego, eliminar el campo de encabezado Connection en sí (o reemplazarlo con las opciones de control propias del intermediario para el mensaje reenviado).
+
+Por lo tanto, el campo de encabezado Connection proporciona una forma declarativa de distinguir los campos que solo están destinados al destinatario inmediato ("salto a salto") de aquellos campos que están destinados a todos los destinatarios en la cadena ("de extremo a extremo"), lo que permite que el mensaje sea autodescriptivo y que se puedan implementar futuras extensiones específicas de la conexión sin temor a que sean reenviadas ciegamente por intermediarios más antiguos.
+
+Además, los intermediarios DEBEN eliminar o reemplazar los campos que se sabe que requieren eliminación antes del reenvío, ya sea que aparezcan o no.  como una opción de conexión, después de aplicar la semántica de esos campos. Esto incluye, entre otras cosas:
+
