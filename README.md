@@ -1039,8 +1039,38 @@ Debido a la posibilidad de que los campos de trailer se descarten en tránsito, 
 
 >Procesamiento de campos de trailer
 
-El campo de encabezado "Tráiler" se puede enviar para indicar los campos que probablemente se enviarán en la sección de trailer, lo que permite a los destinatarios prepararse para su recepción antes de procesar el contenido. Por ejemplo, esto podría ser útil si un nombre de campo indica que se debe calcular una suma de verificación dinámica a medida que se recibe el contenido y luego verificarse inmediatamente al recibir el valor del campo final.
+El campo de encabezado "Tráiler" se puede enviar para indicar los campos que probablemente se enviarán en la sección de trailer, lo que permite a los destinatarios prepararse para su recepción antes de procesar el contenido. Por ejemplo, esto podría ser útil si un nombre de campo indica que se debe calcular una suma de verificación dinámica a medida que se recibe el contenido y luego verificarse inmediatamente al recibir el valor del campo.
 
-Al igual que los campos de encabezado, los campos finales con el mismo nombre se procesan en el orden en que se reciben; varias líneas de campo de cola con el mismo nombre tienen la semántica equivalente a agregar los valores múltiples como una lista de miembros. Los campos finales que podrían generarse más de una vez durante un mensaje DEBEN definirse como un campo basado en lista incluso si cada valor de miembro solo se procesa una vez por línea de campo recibida.
+Al igual que los campos de encabezado, los campos de trailer con el mismo nombre se procesan en el orden en que se reciben; varias líneas de campo de cola con el mismo nombre tienen la semántica equivalente a agregar los valores múltiples como una lista de miembros. Los campos de trailer que podrían generarse más de una vez durante un mensaje DEBEN definirse como un campo basado en lista, incluso si cada valor de miembro solo se procesa una vez por línea de campo recibida.
 
-Al final de un mensaje, un destinatario PUEDE tratar el conjunto de campos finales recibidos como una estructura de datos de pares de nombre/valor, similar (pero separada) de los campos de encabezado. Se pueden definir expectativas de procesamiento adicionales, si las hay, dentro de la especificación de campo para un campo destinado a uso en remolques.
+Al final de un mensaje, un destinatario PUEDE tratar el conjunto de campos de trailer recibidos como una estructura de datos de pares de nombre/valor, similar (pero separada) de los campos de encabezado. Se pueden definir expectativas de procesamiento adicionales, si las hay, dentro de la especificación de campo para un campo destinado a uso en trailers.
+
+>Metadatos del mensaje
+
+Los campos que describen el mensaje en sí, como cuándo y cómo se generó el mensaje, pueden aparecer tanto en solicitudes como en respuestas.
+
+>Fecha
+
+El campo de encabezado ```Fecha``` representa la fecha y hora en que se originó el mensaje y tiene la misma semántica que el campo Fecha de origen (orig-date). El valor del campo es una fecha HTTP.
+
+```
+Date = HTTP-date
+```
+
+Un ejemplo es
+
+```
+Date: Tue, 15 Nov 1994 08:12:31 GMT
+```
+
+Un remitente que genera un campo de encabezado de Fecha DEBE generar el valor de su campo como la mejor aproximación disponible de la fecha y hora de generación del mensaje. En teoría, la fecha debería representar el momento justo antes de generar el contenido del mensaje. En la práctica, un remitente puede generar el valor de la fecha en cualquier momento durante el origen del mensaje.
+
+Un servidor de origen con un reloj DEBE generar un campo de encabezado de Fecha en todas las respuestas 2xx (Exitosa), 3xx (Redirección) y 4xx (Error del cliente), y PUEDE generar un campo de encabezado de Fecha en las respuestas 1xx (Informativa) y 5xx (Error del servidor).
+
+Un servidor de origen sin reloj NO DEBE generar un campo de encabezado de Fecha.
+
+Un destinatario con un reloj que recibe un mensaje de respuesta sin un campo de encabezado de Fecha DEBE registrar la hora en que se recibió y agregar un campo de encabezado de Fecha correspondiente a la sección de encabezado del mensaje si se almacena en caché o se reenvía en sentido descendente.
+
+Un destinatario con un reloj que recibe una respuesta con un valor de campo de encabezado de fecha no válido PUEDE reemplazar ese valor con la hora en que se recibió la respuesta.
+
+Un agente de usuario PUEDE enviar un campo de encabezado de Fecha en una solicitud, aunque generalmente no lo hará a menos que crea que transmite información útil al servidor. Por ejemplo, las aplicaciones personalizadas de HTTP pueden transmitir una fecha si se espera que el servidor ajuste su interpretación de la solicitud del usuario en función de las diferencias entre los relojes del agente de usuario y del servidor.
