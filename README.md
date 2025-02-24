@@ -920,3 +920,51 @@ Los destinatarios de un valor de marca de tiempo en formato de fecha rfc850, que
 Se recomienda a los destinatarios de los valores de las marcas de tiempo que sean sólidos al analizar las marcas de tiempo, a menos que la definición del campo lo restrinja. Por ejemplo, en ocasiones los mensajes se reenvían a través de HTTP desde una fuente que no es HTTP y que podría generar cualquiera de las especificaciones de fecha y hora definidas por el formato de mensajes de Internet.
 
 Nota: Los requisitos HTTP para formatos de marca de tiempo se aplican solo a su uso dentro del flujo de protocolo. No es necesario que las implementaciones utilicen estos formatos para la presentación del usuario, el registro de solicitudes, etc.
+
+>Abstracción de mensajes
+
+Cada versión principal de HTTP define su propia sintaxis para comunicar mensajes. Esta sección define un tipo de datos abstracto para los mensajes HTTP basado en una generalización de las características de los mensajes, la estructura común y la capacidad para transmitir semántica. Esta abstracción se utiliza para definir requisitos para los remitentes y destinatarios que son independientes de la versión de HTTP, de modo que un mensaje de una versión pueda transmitirse a través de otras versiones sin cambiar su significado.
+
+Un "mensaje" consta de lo siguiente:
+
+* datos de control para describir y enrutar el mensaje,
+* una tabla de búsqueda de encabezados de pares nombre/valor para ampliar esos datos de control y transmitir información adicional sobre el remitente, el mensaje, el contenido o el contexto,
+* un flujo de contenido potencialmente ilimitado, y
+* una tabla de búsqueda de trailers de pares nombre/valor para comunicar información obtenida al enviar el contenido.
+
+Primero se envían los datos de control y de encuadre, seguidos de una sección de encabezado que contiene los campos de la tabla de encabezados. Cuando un mensaje incluye contenido, este se envía después de la sección de encabezado, posiblemente seguido de una sección de avance que puede contener los campos de la tabla de avances.
+
+Se espera que los mensajes se procesen como un flujo continuo, en el que el propósito de ese flujo y su procesamiento continuo se revelan mientras se leen. Por lo tanto, los datos de control describen lo que el destinatario necesita saber de inmediato, los campos de encabezado describen lo que se debe saber antes de recibir el contenido, el contenido (cuando está presente) presumiblemente contiene lo que el destinatario desea o necesita para cumplir con la semántica del mensaje y los campos de avance proporcionan metadatos opcionales que se desconocían antes de enviar el contenido.
+
+Los mensajes deben ser "autodescriptivos": todo lo que un destinatario necesita saber sobre el mensaje se puede determinar observando el mensaje en sí, después de decodificar o reconstruir partes que se han comprimido o eliminado en tránsito, sin necesidad de comprender el estado actual de la aplicación del remitente (establecido a través de mensajes anteriores). Sin embargo, un cliente DEBE conservar el conocimiento de la solicitud al analizar, interpretar o almacenar en caché una respuesta correspondiente. Por ejemplo, las respuestas al método HEAD se ven exactamente como el comienzo de una respuesta a GET, pero no se pueden analizar de la misma manera.
+
+Tenga en cuenta que esta abstracción de mensajes es una generalización en muchas versiones de HTTP, incluidas funciones que podrían no encontrarse en algunas versiones. Por ejemplo, los tráileres se introdujeron dentro de la codificación de transferencia fragmentada de HTTP/1.1 como una sección de tráiler después del contenido. Una función equivalente está presente en HTTP/2 y HTTP/3 dentro del bloque de encabezado que finaliza cada transmisión.
+
+>Enmarcación y completitud
+
+El encuadre de los mensajes indica cómo comienza y termina cada mensaje, de modo que cada uno de ellos pueda distinguirse de otros mensajes o del ruido en la misma conexión. Cada versión principal de HTTP define su propio mecanismo de encuadre.
+
+HTTP/0.9 y las primeras implementaciones de HTTP/1.0 utilizaban el cierre de la conexión subyacente para finalizar una respuesta. Para lograr compatibilidad con versiones anteriores, este encuadre implícito también está permitido en HTTP/1.1. Sin embargo, el encuadre implícito puede fallar al distinguir una respuesta incompleta si la conexión se cierra antes de tiempo. Por ese motivo, casi todas las implementaciones modernas utilizan encuadre explícito en forma de secuencias de datos de mensajes delimitadas por longitud.
+
+Un mensaje se considera "completo" cuando todos los octetos indicados por su encuadre están disponibles. Tenga en cuenta que, cuando no se utiliza un encuadre explícito, un mensaje de respuesta que finaliza con el cierre de la conexión subyacente se considera completo aunque pueda no distinguirse de una respuesta incompleta, a menos que un error a nivel de transporte indique que no está completo.
+
+>Datos de control
+
+Los mensajes comienzan con datos de control que describen su propósito principal. Los datos de control del mensaje de solicitud incluyen un método de solicitud, un objetivo de solicitud y una versión de protocolo. Los datos de control del mensaje de respuesta incluyen un código de estado, una frase de motivo opcional y una versión de protocolo.
+
+En HTTP/1.1 y versiones anteriores, los datos de control se envían como la primera línea de un mensaje. En HTTP/2 y HTTP/3, los datos de control se envían como campos de pseudoencabezado con un prefijo de nombre reservado (por ejemplo, ":authority").
+
+Cada mensaje HTTP tiene una versión de protocolo. Según la versión que se utilice, puede identificarse dentro del mensaje de forma explícita o inferirse a partir de la conexión a través de la cual se recibe el mensaje. Los destinatarios utilizan esa información de versión para determinar las limitaciones o el potencial de una comunicación posterior con ese remitente.
+
+Cuando un intermediario reenvía un mensaje, la versión del protocolo se actualiza para reflejar la versión utilizada por ese intermediario. El campo de encabezado Via se utiliza para comunicar información del protocolo ascendente dentro de un mensaje reenviado.
+
+Un cliente DEBE enviar una versión de solicitud igual a la versión más alta con la que el cliente es compatible y cuya versión principal no sea superior a la versión más alta compatible con el servidor, si se conoce. Un cliente NO DEBE enviar una versión con la que no es compatible.
+
+Un cliente PUEDE enviar una versión de solicitud inferior si se sabe que el servidor implementa incorrectamente la especificación HTTP, pero solo después de que el cliente haya intentado al menos una solicitud normal y haya determinado a partir del código de estado de respuesta o los campos de encabezado que el servidor maneja incorrectamente versiones de solicitud superiores.
+
+Un servidor DEBE enviar una versión de respuesta igual a la versión más alta con la que el servidor es compatible y que tiene una versión principal menor o igual a la que recibió en la solicitud. Un servidor NO DEBE enviar una versión con la que no es compatible. Un servidor puede enviar una respuesta 505 (Versión HTTP no compatible) si desea, por cualquier motivo, rechazar el servicio de la versión principal del protocolo del cliente.
+
+Un destinatario que recibe un mensaje con un número de versión principal que implementa y un número de versión secundaria superior al que implementa DEBERÍA procesar el mensaje como si estuviera en la versión secundaria más alta dentro de esa versión principal con la que el destinatario es compatible. Un destinatario puede suponer que un mensaje con una versión secundaria superior, cuando se envía a un destinatario que aún no ha indicado su compatibilidad con esa versión superior, es lo suficientemente compatible con versiones anteriores como para que cualquier implementación de la misma versión principal lo procese de manera segura.
+
+>Campos de encabezado
+
