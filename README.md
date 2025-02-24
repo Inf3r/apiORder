@@ -1160,6 +1160,21 @@ Si se aplica un proxy "http" o "https", el cliente se conecta de forma entrante 
 
 Si no se aplica ningún proxy, un cliente típico invocará una rutina de controlador (específica para el esquema de la URI de destino) para obtener acceso al recurso identificado. La forma en que esto se logra depende del esquema de la URI de destino y se define por su especificación asociada.
 
-La sección 4.3.2 define cómo obtener acceso a un recurso "http" estableciendo (o reutilizando) una conexión entrante al servidor de origen identificado y luego enviándole un mensaje de solicitud HTTP que contenga un destino de solicitud que coincida con la URI de destino del cliente.
+>Rechazar solicitudes mal dirigidas
 
-La sección 4.3.3 define cómo obtener acceso a un recurso "https" estableciendo (o reutilizando) una conexión segura entrante a un servidor de origen que tenga autoridad para el origen identificado y luego enviándole un mensaje de solicitud HTTP que contenga un destino de solicitud que coincida con la URI de destino del cliente.
+Una vez que un servidor recibe una solicitud y la analiza lo suficiente para determinar su URI de destino, el servidor decide si procesar la solicitud por sí mismo, reenviarla a otro servidor, redirigir al cliente a un recurso diferente, responder con un error o interrumpir la conexión. Esta decisión puede verse influenciada por cualquier aspecto de la solicitud o del contexto de conexión, pero está dirigida específicamente a si el servidor ha sido configurado para procesar solicitudes para esa URI de destino y si el contexto de conexión es apropiado para esa solicitud.
+
+Por ejemplo, una solicitud podría haber sido mal dirigida, deliberada o accidentalmente, de modo que la información dentro de un campo de encabezado de Host recibido difiere del host o puerto de la conexión. Si la conexión proviene de una puerta de enlace de confianza, dicha inconsistencia podría esperarse; de lo contrario, podría indicar un intento de eludir los filtros de seguridad, engañar al servidor para que entregue contenido no público o envenenar una caché.
+
+A menos que la conexión provenga de una puerta de enlace de confianza, un servidor de origen DEBE rechazar una solicitud si no se cumple algún requisito específico del esquema para la URI de destino. En particular, una solicitud de un recurso "https" DEBE ser rechazada a menos que se haya recibido a través de una conexión que se haya asegurado mediante un certificado válido para el origen de esa URI de destino.
+
+El código de estado 421 (Solicitud mal dirigida) en una respuesta, indica que el servidor de origen ha rechazado la solicitud porque parece haber sido mal dirigida.
+
+>Correlación de respuestas
+
+Se puede utilizar una conexión para varios intercambios de solicitudes y respuestas. El mecanismo utilizado para correlacionar los mensajes de solicitud y respuesta dependen de la versión; algunas versiones de HTTP utilizan un orden implícito de los mensajes, mientras que otras utilizan un identificador explícito.
+
+Todas las respuestas, independientemente del código de estado (incluidas las respuestas provisionales), se pueden enviar en cualquier momento después de recibir una solicitud, incluso si la solicitud aún no se ha completado. Una respuesta puede completarse antes de que se complete su solicitud correspondientes. Asimismo, no se espera que los clientes esperen una cantidad específica de tiempo para recibir una respuesta.  Los clientes (incluidos los intermediarios) pueden abandonar una solicitud si no reciben una respuesta en un plazo de tiempo razonable.
+
+Un cliente que recibe una respuesta mientras todavía está enviando la solicitud asociada DEBERÍA continuar enviando esa solicitud a menos que reciba una indicación explícita.
+
