@@ -1216,3 +1216,88 @@ Además, los intermediarios DEBEN eliminar o reemplazar los campos que se sabe q
 * Transfer-Encoding
 * Upgrade
 ```
+
+Un remitente NO DEBE enviar una opción de conexión correspondiente a un campo que está destinado a todos los destinatarios del contenido. Por ejemplo, Cache-Control nunca es apropiado como opción de conexión.
+
+Las opciones de conexión no siempre corresponden a un campo presente en el mensaje, ya que un campo específico de conexión podría no ser necesario si no hay parámetros asociados con una opción de conexión. Por el contrario, un campo específico de conexión recibido sin una opción de conexión correspondiente, generalmente indica que el campo ha sido reenviado incorrectamente por un intermediario y debe ser ignorado por el destinatario.
+
+Al definir una nueva opción de conexión que no corresponde a un campo, los autores de especificaciones deben reservar el nombre del campo correspondiente de todos modos para evitar colisiones posteriores. Dichos nombres de campo reservados se registran en el "Registro de nombres de campo del Protocolo de transferencia de hipertexto (HTTP)".
+
+>Max-Forwards
+
+El campo de encabezado "Max-Forwards" proporciona un mecanismo con los métodos de solicitud TRACE y OPTIONS para limitar la cantidad de veces que los servidores proxy reenvían la solicitud. Esto puede resultar útil cuando el cliente intenta rastrear una solicitud que parece fallar o entrar en un bucle a mitad de la cadena.
+
+```
+Max-Forwards = 1*DIGIT
+```
+
+El valor de Max-Forwards es un entero decimal que indica la cantidad restante de veces que se puede reenviar este mensaje de solicitud.
+
+Cada intermediario que recibe una solicitud TRACE u OPTIONS que contiene un campo de encabezado Max-Forwards DEBE verificar y actualizar su valor antes de reenviar la solicitud. Si el valor recibido es cero (0), el intermediario NO DEBE reenviar la solicitud; en su lugar, el intermediario DEBE responder como el destinatario final. Si el valor de Max-Forwards recibido es mayor que cero, el intermediario DEBE generar un campo Max-Forwards actualizado en el mensaje reenviado con un valor de campo que sea el menor de 
+
+```
+a) el valor recibido disminuido en uno (1) 
+o 
+b) el valor máximo admitido por el destinatario para Max-Forwards.
+```
+
+Un destinatario PUEDE ignorar un campo de encabezado Max-Forwards recibido con cualquier otro método de solicitud.
+
+>Via
+
+El campo de encabezado "Via" indica la presencia de protocolos y destinatarios intermedios entre el agente de usuario y el servidor (en las solicitudes) o entre el servidor de origen y el cliente (en las respuestas), de forma similar al campo de encabezado "Recibido" en el correo electrónico. Via se puede utilizar para realizar un seguimiento de los reenvíos de mensajes, evitar bucles de solicitudes e identificar las capacidades de protocolo de los remitentes a lo largo de la cadena de solicitud/respuesta.
+
+```
+Via               = #( received-protocol RWS received-by [ RWS comment ] )
+received-protocol = [ protocol-name "/" ] protocol-version
+received-by       = pseudonym [ ":" port ]
+pseudonym         = token
+```
+
+Cada miembro del valor del campo Via representa un proxy o una puerta de enlace que ha reenviado el mensaje. Cada intermediario agrega su propia información sobre cómo se recibió el mensaje, de modo que el resultado final se ordena de acuerdo con la secuencia de destinatarios que lo reenvían.
+
+Un proxy DEBE enviar un campo de encabezado Via apropiado, como se describe a continuación, en cada mensaje que reenvía. Una puerta de enlace HTTP a HTTP DEBE enviar un campo de encabezado Via apropiado en cada mensaje de solicitud entrante y PUEDE enviar un campo de encabezado Via en los mensajes de respuesta reenviados.
+
+Para cada intermediario, el protocolo recibido indica el protocolo y la versión del protocolo utilizados por el remitente ascendente del mensaje. Por lo tanto, el valor del campo Via registra las capacidades del protocolo anunciadas de la cadena de solicitud/respuesta de modo que permanezcan visibles para los destinatarios descendentes; esto puede ser útil para determinar qué características incompatibles con versiones anteriores podrían ser seguras para usar en respuesta o dentro de una solicitud posterior. Para abreviar, se omite el nombre del protocolo cuando el protocolo recibido es HTTP.
+
+La parte "recibido por" normalmente es el host y el número de puerto opcional de un servidor o cliente destinatario que posteriormente reenvió el mensaje. Sin embargo, si se considera que el host real es información confidencial, el remitente PUEDE reemplazarlo con un seudónimo. Si no se proporciona un puerto, el destinatario PUEDE interpretarlo como que se recibió en el puerto predeterminado, si lo hubiera, para el protocolo recibido.
+
+El remitente PUEDE generar comentarios para identificar el software de cada destinatario, de manera análoga a los campos de encabezado User-Agent y Server. Sin embargo, los comentarios en Via son opcionales y el destinatario PUEDE eliminarlos antes de reenviar el mensaje.
+
+Por ejemplo, un mensaje de solicitud podría enviarse desde un agente de usuario HTTP/1.0 a un proxy interno cuyo nombre en código es "fred", que utiliza HTTP/1.1 para reenviar la solicitud a un proxy público en p.example.net, que completa la solicitud reenviándola al servidor de origen en www.example.com. La solicitud recibida por www.example.com tendría entonces el siguiente campo de encabezado Via:
+
+```
+Via: 1.0 fred, 1.1 p.example.net
+```
+
+Un intermediario utilizado como portal a través de un cortafuegos de red NO DEBE reenviar los nombres y puertos de los hosts dentro de la región del cortafuegos a menos que esté habilitado explícitamente para hacerlo. Si no está habilitado, dicho intermediario DEBE reemplazar cada host recibido de cualquier host detrás del cortafuegos por un seudónimo apropiado para ese host.
+
+Un intermediario PUEDE combinar una subsecuencia ordenada de miembros de la lista de campos de encabezado Via en un solo miembro si las entradas tienen valores de protocolo recibido idénticos. Por ejemplo,
+
+```
+Via: 1.0 ricky, 1.1 ethel, 1.1 fred, 1.0 lucy
+```
+
+Podría colapsarse a
+
+```
+Via: 1.0 ricky, 1.1 mertz, 1.0 lucy
+```
+
+Un remitente NO DEBE combinar varios miembros de la lista a menos que todos estén bajo el mismo control organizacional y los hosts ya hayan sido reemplazados por seudónimos. Un remitente NO DEBE combinar miembros que tengan diferentes valores de protocolo recibido.
+
+>Transformaciones de mensajes
+
+Algunos intermediarios incluyen funciones para transformar los mensajes y su contenido. Un proxy puede, por ejemplo, convertir entre formatos de imagen para ahorrar espacio en la memoria caché o reducir la cantidad de tráfico en un enlace lento. Sin embargo, pueden surgir problemas operativos cuando estas transformaciones se aplican a contenido destinado a aplicaciones críticas, como imágenes médicas o análisis de datos científicos, en particular cuando se utilizan comprobaciones de integridad o firmas digitales para garantizar que el contenido recibido sea idéntico al original.
+
+Un proxy HTTP a HTTP se denomina "proxy transformador" si está diseñado o configurado para modificar mensajes de una manera semánticamente significativa (es decir, modificaciones, más allá de las requeridas por el procesamiento HTTP normal, que cambian el mensaje de una manera que sería significativa para el remitente original o potencialmente significativa para los destinatarios posteriores). Por ejemplo, un proxy transformador podría actuar como un servidor de anotaciones compartido (modificando las respuestas para incluir referencias a una base de datos de anotaciones local), un filtro de malware, un transcodificador de formato o un filtro de privacidad. Se presume que dichas transformaciones son deseadas por cualquier cliente (u organización cliente) que elija el proxy.
+
+Si un proxy recibe una URI de destino con un nombre de host que no es un nombre de dominio completo, PUEDE agregar su propio dominio al nombre de host que recibió al reenviar la solicitud. Un proxy NO DEBE cambiar el nombre de host si la URI de destino contiene un nombre de dominio completo.
+
+Un proxy NO DEBE modificar las partes "absolute-path" y "query" de la URI de destino recibida al reenviarla al siguiente servidor entrante, excepto según lo requiera ese protocolo de reenvío. Por ejemplo, un proxy que reenvía una solicitud a un servidor de origen a través de HTTP/1.1 reemplazará una ruta vacía con "/" o "*", según el método de solicitud.
+
+Un proxy NO DEBE transformar el contenido de un mensaje de respuesta que contenga una directiva de caché de no transformación. Tenga en cuenta que esto no se aplica a las transformaciones de mensajes que no cambian el contenido, como la adición o eliminación de codificaciones de transferencia (Sección 7 de [HTTP/1.1]).
+
+Un proxy PUEDE transformar el contenido de un mensaje que no contenga una directiva de caché de no transformación ```(no-transform)```. Un proxy que transforma el contenido de una respuesta 200 (OK) puede informar a los destinatarios posteriores que se ha aplicado una transformación cambiando el código de estado de respuesta a 203 (Información no autorizada).
+
+Un proxy NO DEBE modificar los campos de encabezado que proporcionan información sobre los puntos finales de la cadena de comunicación, el estado del recurso o la representación seleccionada (que no sea el contenido) a menos que la definición del campo permita específicamente dicha modificación o la modificación se considere necesaria para la privacidad o la seguridad.
