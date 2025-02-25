@@ -1207,5 +1207,12 @@ Los intermediarios DEBEN analizar un campo de encabezado Connection recibido ant
 
 Por lo tanto, el campo de encabezado Connection proporciona una forma declarativa de distinguir los campos que solo están destinados al destinatario inmediato ("salto a salto") de aquellos campos que están destinados a todos los destinatarios en la cadena ("de extremo a extremo"), lo que permite que el mensaje sea autodescriptivo y que se puedan implementar futuras extensiones específicas de la conexión sin temor a que sean reenviadas ciegamente por intermediarios más antiguos.
 
-Además, los intermediarios DEBEN eliminar o reemplazar los campos que se sabe que requieren eliminación antes del reenvío, ya sea que aparezcan o no.  como una opción de conexión, después de aplicar la semántica de esos campos. Esto incluye, entre otras cosas:
+Además, los intermediarios DEBEN eliminar o reemplazar los campos que se sabe que requieren eliminación antes del reenvío, ya sea que aparezcan o no, como una opción de conexión después de aplicar la semántica de esos campos. Esto incluye, entre otras cosas:
 
+```
+* Proxy-Connection
+* Keep-Alive
+* TE 
+* Transfer-Encoding
+* Upgrade
+```
