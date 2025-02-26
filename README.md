@@ -1301,3 +1301,55 @@ Un proxy NO DEBE transformar el contenido de un mensaje de respuesta que conteng
 Un proxy PUEDE transformar el contenido de un mensaje que no contenga una directiva de caché de no transformación ```(no-transform)```. Un proxy que transforma el contenido de una respuesta 200 (OK) puede informar a los destinatarios posteriores que se ha aplicado una transformación cambiando el código de estado de respuesta a 203 (Información no autorizada).
 
 Un proxy NO DEBE modificar los campos de encabezado que proporcionan información sobre los puntos finales de la cadena de comunicación, el estado del recurso o la representación seleccionada (que no sea el contenido) a menos que la definición del campo permita específicamente dicha modificación o la modificación se considere necesaria para la privacidad o la seguridad.
+
+>Upgrade
+
+El campo de encabezado "Upgrade" tiene como objetivo proporcionar un mecanismo simple para realizar la transición de HTTP/1.1 a algún otro protocolo en la misma conexión.
+
+Un cliente PUEDE enviar una lista de nombres de protocolos en el campo de encabezado Upgrade de una solicitud para invitar al servidor a cambiar a uno o más de los protocolos nombrados, en orden de preferencia descendente, antes de enviar la respuesta final. Un servidor PUEDE ignorar un campo de encabezado Upgrade recibido si desea continuar utilizando el protocolo actual en esa conexión. Upgrade no se puede utilizar para insistir en un cambio de protocolo.
+
+```
+Upgrade          = #protocol
+
+protocol         = protocol-name ["/" protocol-version]
+protocol-name    = token
+protocol-version = token
+```
+
+Aunque los nombres de protocolo se registran con un orden de preferencia entre mayúsculas y minúsculas, los destinatarios DEBEN utilizar una comparación que no distinga entre mayúsculas y minúsculas al hacer coincidir cada nombre de protocolo con los protocolos admitidos.
+
+Un servidor que envía una respuesta 101 (Cambio de protocolos) DEBE enviar un campo de encabezado de actualización para indicar los nuevos protocolos a los que se está cambiando la conexión; si se están cambiando varias capas de protocolo, el remitente DEBE enumerar los protocolos en orden ascendente de capa. Un servidor NO DEBE cambiar a un protocolo que no haya sido indicado por el cliente en el campo de encabezado de actualización de la solicitud correspondiente. Un servidor PUEDE optar por ignorar el orden de preferencia indicado por el cliente y seleccionar los nuevos protocolos en función de otros factores, como la naturaleza de la solicitud o la carga actual en el servidor.
+
+Un servidor que envía una respuesta 426 (Actualización requerida) DEBE enviar un campo de encabezado de Actualización para indicar los protocolos aceptables, en orden de preferencia descendente.
+
+Un servidor PUEDE enviar un campo de encabezado de Actualización en cualquier otra respuesta para anunciar que implementa soporte para la actualización a los protocolos enumerados, en orden de preferencia descendente, cuando sea apropiado para una solicitud futura.
+
+El siguiente es un ejemplo hipotético enviado por un cliente:
+
+```
+GET /hello HTTP/1.1
+Host: www.example.com
+Connection: upgrade
+Upgrade: websocket, IRC/6.9, RTA/x11
+```
+
+Las capacidades y la naturaleza de la comunicación a nivel de aplicación después del cambio de protocolo dependen completamente del nuevo protocolo o protocolos elegidos. Sin embargo, inmediatamente después de enviar la respuesta 101 (cambio de protocolos), se espera que el servidor continúe respondiendo a la solicitud original como si hubiera recibido su equivalente dentro del nuevo protocolo (es decir, el servidor aún tiene una solicitud pendiente que satisfacer después de que se haya cambiado el protocolo, y se espera que lo haga sin requerir que se repita la solicitud).
+
+Por ejemplo, si se recibe el campo de encabezado Upgrade en una solicitud GET y el servidor decide cambiar de protocolo, primero responde con un mensaje 101 (cambio de protocolos) en HTTP/1.1 y luego inmediatamente después con el equivalente del nuevo protocolo de una respuesta a un GET en el recurso de destino. Esto permite que una conexión se actualice a protocolos con la misma semántica que HTTP sin el costo de latencia de un viaje de ida y vuelta adicional. Un servidor NO DEBE cambiar de protocolo a menos que la semántica del mensaje recibido pueda ser respetada por el nuevo protocolo; Una solicitud OPTIONS puede ser aceptada por cualquier protocolo.
+
+A continuación se presenta un ejemplo de respuesta a la solicitud hipotética anterior:
+
+```
+HTTP/1.1 101 Switching Protocols
+Connection: upgrade
+Upgrade: websocket
+
+[... data stream switches to websocket with an appropriate response
+(as defined by new protocol) to the "GET /hello" request ...]
+```
+
+El remitente de una actualización DEBE enviar también una opción de conexión "Actualizar" en el campo de encabezado de Conexión para informar a los intermediarios que no deben reenviar este campo. Un servidor que recibe un campo de encabezado de Actualización en una solicitud HTTP/1.0 DEBE ignorar ese campo de Actualización.
+
+Un cliente no puede comenzar a utilizar un protocolo actualizado en la conexión hasta que haya enviado completamente el mensaje de solicitud (es decir, el cliente no puede cambiar el protocolo que está enviando en medio de un mensaje). Si un servidor recibe tanto un campo de encabezado de Actualización como uno de Expect con la expectativa "100-continue", el servidor DEBE enviar una respuesta 100 (Continuar) antes de enviar una respuesta 101 (Cambiar protocolos).
+
+El campo de encabezado Upgrade sólo se aplica a la conmutación de protocolos sobre la conexión existente; no se puede utilizar para cambiar el protocolo de conexión subyacente (transporte) ni para cambiar la comunicación existente a una conexión diferente. Para esos fines, es más apropiado utilizar una respuesta 3xx (Redirección).
