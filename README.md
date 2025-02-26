@@ -1353,3 +1353,24 @@ El remitente de una actualización DEBE enviar también una opción de conexión
 Un cliente no puede comenzar a utilizar un protocolo actualizado en la conexión hasta que haya enviado completamente el mensaje de solicitud (es decir, el cliente no puede cambiar el protocolo que está enviando en medio de un mensaje). Si un servidor recibe tanto un campo de encabezado de Actualización como uno de Expect con la expectativa "100-continue", el servidor DEBE enviar una respuesta 100 (Continuar) antes de enviar una respuesta 101 (Cambiar protocolos).
 
 El campo de encabezado Upgrade sólo se aplica a la conmutación de protocolos sobre la conexión existente; no se puede utilizar para cambiar el protocolo de conexión subyacente (transporte) ni para cambiar la comunicación existente a una conexión diferente. Para esos fines, es más apropiado utilizar una respuesta 3xx (Redirección).
+
+>Datos de representación y metadatos
+
+**DATOS DE REPRESENTACIÓN:**
+
+Los datos de representación asociados a un mensaje HTTP se proporcionan como contenido del mensaje o se hace referencia a ellos mediante la semántica del mensaje y la URI de destino. Los datos de representación tienen un formato y una codificación definidos por los campos de encabezado de metadatos de representación.
+
+El tipo de datos de los datos de representación se determina mediante los campos de encabezado Content-Type y Content-Encoding. Estos definen un modelo de codificación ordenado de dos capas:
+
+```
+representation-data := Content-Encoding( Content-Type( data ) )
+```
+
+**METADATOS DE REPRESENTACIÓN:**
+
+Los campos de encabezado de representación proporcionan metadatos sobre la representación. Cuando un mensaje incluye contenido, los campos de encabezado de representación describen cómo interpretar esos datos. En una respuesta a una solicitud HEAD, los campos de encabezado de representación describen los datos de representación que se habrían incluido en el contenido si la misma solicitud hubiera sido GET.
+
+**Content-Type:**
+
+El campo de encabezado "Content-Type" indica el tipo de medio de la representación asociada: la representación incluida en el contenido del mensaje o la representación seleccionada, según lo determine la semántica del mensaje. El tipo de medio indicado define tanto el formato de los datos como la forma en que el destinatario pretende procesarlos, dentro del alcance de la semántica del mensaje recibido, después de que se decodifiquen las codificaciones de contenido indicadas por Content-Encoding.
+
