@@ -1457,5 +1457,140 @@ Los valores de codificación de contenido indican una transformación de codific
 content-coding   = token
 ```
 
-Todos los códigos de contenido no distinguen entre mayúsculas y minúsculas y deben registrarse en el "Registro de codificación de contenido HTTP".
+Todos los códigos de contenido no distinguen entre mayúsculas y minúsculas y deben registrarse en el "Registro de codificación de contenido HTTP". Los valores de codificación de contenido se utilizan en los campos de encabezado ```Accept-Encoding``` y ```Content-Encoding```.
 
+>Compress Coding
+
+La codificación "compress" es una codificación Lempel-Ziv-Welch (LZW) adaptativa [Welch] que se genera comúnmente con el programa de compresión de archivos UNIX "compress". Un destinatario DEBERÍA considerar que "x-compress" es equivalente a "compress".
+
+>Deflate Coding
+
+La codificación "deflate" es un formato de datos "zlib" que contiene un flujo de datos comprimidos "deflate" que utiliza una combinación del algoritmo de compresión Lempel-Ziv (LZ77) y la codificación Huffman.
+
+Nota: Algunas implementaciones no conformes envían los datos comprimidos "deflate" sin el contenedor zlib.
+
+>Gzip Coding
+
+La codificación "gzip" es una codificación LZ77 con una comprobación de redundancia cíclica (CRC) de 32 bits que suele generar el programa de compresión de archivos gzip. El destinatario DEBERÍA considerar que "x-gzip" es equivalente a "gzip".
+
+>Content-Language
+
+El campo de encabezado "Content-Language" describe el idioma o los idiomas naturales de la audiencia a la que se dirige la representación. Tenga en cuenta que esto podría no ser equivalente a todos los idiomas utilizados en la representación.
+
+```
+Content-Language = #language-tag
+```
+
+El objetivo principal de Content-Language es permitir que un usuario identifique y diferencie las representaciones según su idioma preferido. Por lo tanto, si el contenido está destinado únicamente a un público alfabetizado en español, el campo apropiado es
+
+```
+Content-Language: es
+```
+
+Si no se especifica ningún idioma de contenido, el valor predeterminado es que el contenido está destinado a todos los idiomas. Esto puede significar que el remitente no lo considera específico para ningún idioma natural o que no sabe a qué idioma está destinado.
+
+PUEDEN incluirse varios idiomas para el contenido destinado a varios públicos. Por ejemplo, una versión del "Tratado de Waitangi", presentada simultáneamente en las versiones originales en maorí e inglés, requeriría
+
+```
+Content-Language: mi, en
+```
+
+Sin embargo, el hecho de que una representación contenga varios idiomas no significa que esté destinada a distintos públicos lingüísticos. Un ejemplo sería un manual de iniciación lingüística, como "Una primera lección de latín", que claramente está destinado a un público que sepa leer y escribir en inglés. En este caso, Content-Language solo incluiría "en".
+
+Content-Language PUEDE aplicarse a cualquier tipo de medio, no se limita a los documentos textuales.
+
+>Language Tags
+
+Una etiqueta de idioma, identifica un idioma natural hablado, escrito o transmitido de otro modo por seres humanos para la comunicación de información a otros seres humanos. Los lenguajes informáticos están explícitamente excluidos.
+
+HTTP utiliza etiquetas de idioma dentro de los campos de encabezado Accept-Language y Content-Language. Accept-Language utiliza la producción de rango de idioma más amplio, mientras que Content-Language utiliza la producción de etiquetas de idioma definida a continuación.
+
+```
+language-tag = <Language-Tag>
+```
+
+Una etiqueta de idioma es una secuencia de una o más subetiquetas que no distinguen entre mayúsculas y minúsculas, cada una separada por un guion ("-", %x2D). En la mayoría de los casos, una etiqueta de idioma consta de una subetiqueta de idioma principal que identifica una amplia familia de idiomas relacionados (por ejemplo, "en" = inglés), a la que le sigue opcionalmente una serie de subetiquetas que refinan o limitan el alcance de ese idioma (por ejemplo, "en-CA" = la variedad de inglés que se comunica en Canadá). No se permiten espacios en blanco dentro de una etiqueta de idioma. Algunos ejemplos de etiquetas son
+
+```
+fr, en-US, es-419, az-Arab, x-pig-latin, man-Nkoo-GN
+```
+
+>Content-Length
+
+El campo de encabezado "Content-Length" indica la longitud de los datos de la representación asociada como un número entero decimal no negativo de octetos. Al transferir una representación como contenido, Content-Length se refiere específicamente a la cantidad de datos incluidos para que se puedan utilizar para delimitar el encuadre. En otros casos, Content-Length indica la longitud actual de la representación seleccionada, que los destinatarios pueden utilizar para estimar el tiempo de transferencia o para comparar con representaciones almacenadas previamente.
+
+```
+Content-Length = 1*DIGIT
+```
+
+Un ejemplo es
+
+```
+Content-Length: 2600
+```
+
+Un agente de usuario DEBERÍA enviar Content-Length en una solicitud cuando el método define un significado para el contenido incluido y no está enviando Transfer-Encoding. Por ejemplo, un agente de usuario normalmente envía Content-Length en una solicitud POST incluso cuando el valor es 0 (lo que indica que el contenido está vacío). Un agente de usuario NO DEBERÍA enviar un campo de encabezado Content-Length cuando el mensaje de solicitud no contiene contenido y la semántica del método no anticipa dichos datos.
+
+Un servidor PUEDE enviar un campo de encabezado Content-Length en una respuesta a una solicitud HEAD; un servidor NO DEBE enviar Content-Length en una respuesta de este tipo a menos que el valor de su campo sea igual al número decimal de octetos que se habrían enviado en el contenido de una respuesta si la misma solicitud hubiera utilizado el método GET.
+
+Un servidor PUEDE enviar un campo de encabezado Content-Length en una respuesta 304 (No modificado) a una solicitud GET condicional; un servidor NO DEBE enviar Content-Length en dicha respuesta a menos que el valor de su campo sea igual al número decimal de octetos que se habrían enviado en el contenido de una respuesta 200 (OK) a la misma solicitud.
+
+Un servidor NO DEBE enviar un campo de encabezado Content-Length en ninguna respuesta con un código de estado de 1xx (Informativo) o 204 (Sin contenido). Un servidor NO DEBE enviar un campo de encabezado Content-Length en ninguna respuesta 2xx (Exitosa) a una solicitud CONNECT.
+
+Aparte de los casos definidos anteriormente, en ausencia de Transfer-Encoding, un servidor de origen DEBE enviar un campo de encabezado Content-Length cuando se conoce el tamaño del contenido antes de enviar la sección de encabezado completa. Esto permitirá a los destinatarios posteriores medir el progreso de la transferencia, saber cuándo se completa un mensaje recibido y potencialmente reutilizar la conexión para solicitudes adicionales.
+
+Cualquier valor del campo Content-Length mayor o igual a cero es válido. Dado que no existe un límite predefinido para la longitud del contenido, un destinatario DEBE anticipar posibles números decimales grandes y evitar errores de análisis debido a desbordamientos de conversión de números enteros o pérdida de precisión debido a la conversión de números enteros.
+
+Debido a que Content-Length se utiliza para la delimitación de mensajes en HTTP/1.1, su valor de campo puede afectar la forma en que los destinatarios posteriores analizan el mensaje incluso cuando la conexión inmediata no utiliza HTTP/1.1. Si el mensaje es reenviado por un intermediario posterior, un valor del campo Content-Length que no sea coherente con el encuadre del mensaje recibido puede provocar una falla de seguridad debido al contrabando de solicitudes o la división de respuestas.
+
+Como resultado, un remitente NO DEBE reenviar un mensaje con un valor del campo de encabezado Content-Length que se sabe que es incorrecto.
+
+De manera similar, un remitente NO DEBE reenviar un mensaje con un valor de campo de encabezado Content-Length que no coincida con el ABNF anterior, con una excepción: un destinatario de un valor de campo de encabezado Content-Length que consiste en el mismo valor decimal repetido como una lista separada por comas (por ejemplo, "Content-Length: 42, 42") PUEDE rechazar el mensaje como inválido o reemplazar ese valor de campo inválido con una sola instancia del valor decimal, ya que esto probablemente indica que un procesador de mensajes ascendente generó o combinó un duplicado.
+
+>Content-Location
+
+El campo de encabezado "Content-Location" hace referencia a un URI que se puede utilizar como identificador de un recurso específico correspondiente a la representación en el contenido de este mensaje. En otras palabras, si se realiza una solicitud GET en este URI en el momento de la generación de este mensaje, la respuesta 200 (OK) contendría la misma representación que se incluye como contenido en este mensaje.
+
+```
+Content-Location = absolute-URI / partial-URI
+```
+
+El valor del campo es un URI absoluto o un URI parcial. En el último caso, el URI al que se hace referencia es relativo al URI de destino.
+
+El valor Content-Location no reemplaza al URI de destino. Son metadatos de representación. Tiene la misma sintaxis y semántica que el campo de encabezado del mismo nombre definido para las partes del cuerpo MIME. Sin embargo, su aparición en un mensaje HTTP tiene algunas implicaciones especiales para los destinatarios HTTP.
+
+Si Content-Location se incluye en un mensaje de respuesta 2xx (correcto) y su valor hace referencia (después de la conversión a la forma absoluta) a un URI que es el mismo que el URI de destino, entonces el destinatario PUEDE considerar que el contenido es una representación actual de ese recurso en el momento indicado por la fecha de origen del mensaje. En el caso de una solicitud GET (Sección 9.3.1) o HEAD (Sección 9.3.2), esto es lo mismo que la semántica predeterminada cuando el servidor no proporciona una ubicación de contenido. En el caso de una solicitud que cambia el estado, como PUT (Sección 9.3.4) o POST (Sección 9.3.3), implica que la respuesta del servidor contiene la nueva representación de ese recurso, lo que la distingue de las representaciones que solo podrían informar sobre la acción (por ejemplo, "¡Funcionó!"). Esto permite que las aplicaciones de creación actualicen sus copias locales sin la necesidad de una solicitud GET posterior.
+
+Si se incluye Content-Location en un mensaje de respuesta 2xx (correcto) y el valor de su campo hace referencia a un URI que difiere del URI de destino, el servidor de origen afirma que el URI es un identificador de un recurso diferente correspondiente a la representación incluida. Solo se puede confiar en esta afirmación si ambos identificadores comparten el mismo propietario del recurso, que no se puede determinar mediante programación a través de HTTP.
+
+* En el caso de una respuesta a una solicitud GET o HEAD, esto es una indicación de que el URI de destino hace referencia a un recurso que está sujeto a la negociación de contenido y el valor del campo Content-Location es un identificador más específico para la representación seleccionada.
+* En el caso de una respuesta 201 (Created) a un método de cambio de estado, un valor del campo Content-Location que sea idéntico al valor del campo Location indica que este contenido es una representación actual del recurso recién creado.
+* De lo contrario, un Content-Location de este tipo indica que este contenido es una representación que informa sobre el estado de la acción solicitada y que el mismo informe está disponible (para un acceso futuro con GET) en el URI indicado. Por ejemplo, una transacción de compra realizada a través de una solicitud POST podría incluir un documento de recibo como contenido de la respuesta 200 (OK); el valor del campo Content-Location proporciona un identificador para recuperar una copia de ese mismo recibo en el futuro.
+
+Un agente de usuario que envía Content-Location en un mensaje de solicitud está indicando que su valor se refiere al lugar donde el agente de usuario obtuvo originalmente el contenido de la representación adjunta (antes de cualquier modificación realizada por ese agente de usuario). En otras palabras, el agente de usuario está proporcionando un vínculo de retorno a la fuente de la representación original.
+
+Un servidor de origen que recibe un campo Content-Location en un mensaje de solicitud DEBE tratar la información como un contexto de solicitud transitorio en lugar de como metadatos que se guardarán textualmente como parte de la representación. Un servidor de origen PUEDE usar ese contexto para guiar el procesamiento de la solicitud o para guardarla para otros usos, como dentro de los vínculos de origen o los metadatos de control de versiones. Sin embargo, un servidor de origen NO DEBE usar dicha información de contexto para alterar la semántica de la solicitud.
+
+Por ejemplo, si un cliente realiza una solicitud PUT sobre un recurso negociado y el servidor de origen acepta esa solicitud PUT (sin redirección), se espera que el nuevo estado de ese recurso sea coherente con la representación suministrada en esa solicitud PUT; la ubicación del contenido no se puede utilizar como una forma de identificador de selección de contenido inverso para actualizar solo una de las representaciones negociadas. Si el agente de usuario hubiera deseado esta última semántica, habría aplicado la solicitud PUT directamente al URI de ubicación del contenido.
+
+>Campos de validación
+
+Los metadatos de recursos se denominan "validadores" si se pueden utilizar dentro de una condición previa para realizar una solicitud condicional. Los campos de validación transmiten un validador actual para la representación seleccionada.
+
+En las respuestas a solicitudes seguras, los campos de validación describen la representación seleccionada elegida por el servidor de origen al procesar la respuesta. Tenga en cuenta que, según la semántica del método y del código de estado, la representación seleccionada para una respuesta determinada no es necesariamente la misma que la representación incluida como contenido de la respuesta.
+
+En una respuesta exitosa a una solicitud de cambio de estado, los campos de validación describen la nueva representación que ha reemplazado a la representación seleccionada previamente como resultado del procesamiento de la solicitud.
+
+Por ejemplo, un campo ETag en una respuesta 201 (Created) comunica la etiqueta de entidad de la representación del recurso recién creado, de modo que la etiqueta de entidad se pueda utilizar como un validador en solicitudes condicionales posteriores para evitar el problema de "actualización perdida".
+
+Esta especificación define dos formas de metadatos que se utilizan comúnmente para observar el estado del recurso y comprobar las condiciones previas: fechas de modificación y etiquetas de entidad opacas. Se han definido metadatos adicionales que reflejan el estado del recurso mediante varias extensiones de HTTP, como Web Distributed Authoring and Versioning [WEBDAV], que están fuera del alcance de esta especificación.
+
+>Débil vs Fuerte
+
+Los validadores se presentan en dos tipos: fuertes o débiles. Los validadores débiles son fáciles de generar, pero son mucho menos útiles para las comparaciones. Los validadores fuertes son ideales para las comparaciones, pero pueden ser muy difíciles (y en ocasiones imposibles) de generar de manera eficiente. En lugar de imponer que todas las formas de recursos se adhieran a la misma fuerza del validador, HTTP expone el tipo de validador en uso e impone restricciones sobre cuándo se pueden usar validadores débiles como condiciones previas.
+
+Un "validador fuerte" son metadatos de representación que cambian de valor cada vez que se produce un cambio en los datos de representación que serían observables en el contenido de una respuesta 200 (OK) a GET.
+
+Un validador fuerte puede cambiar por razones distintas a un cambio en los datos de representación, como cuando se cambia una parte semánticamente significativa de los metadatos de representación (por ejemplo, Content-Type), pero lo mejor para el servidor de origen es cambiar el valor solo cuando sea necesario para invalidar las respuestas almacenadas en cachés remotos y herramientas de creación.
+
+Las entradas de caché pueden persistir durante períodos arbitrarios, independientemente de los tiempos de expiración. Por lo tanto, una caché puede intentar validar una entrada utilizando un validador que obtuvo en un pasado lejano. Un validador fuerte es único en todas las versiones de todas las representaciones asociadas con un recurso en particular a lo largo del tiempo. Sin embargo, no hay implicación de unicidad entre representaciones de diferentes recursos (es decir, el mismo validador fuerte puede estar en uso para representaciones de múltiples recursos al mismo tiempo y no implica que esas representaciones sean equivalentes).
