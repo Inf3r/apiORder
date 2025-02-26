@@ -1374,3 +1374,55 @@ Los campos de encabezado de representación proporcionan metadatos sobre la repr
 
 El campo de encabezado "Content-Type" indica el tipo de medio de la representación asociada: la representación incluida en el contenido del mensaje o la representación seleccionada, según lo determine la semántica del mensaje. El tipo de medio indicado define tanto el formato de los datos como la forma en que el destinatario pretende procesarlos, dentro del alcance de la semántica del mensaje recibido, después de que se decodifiquen las codificaciones de contenido indicadas por Content-Encoding.
 
+```
+Content-Type = media-type
+```
+
+Un ejemplo del campo de tipo de medio es
+
+```
+Content-Type: text/html; charset=ISO-8859-4
+```
+
+Un remitente que genera un mensaje que contiene contenido DEBERÍA generar un campo de encabezado Content-Type en ese mensaje a menos que el tipo de medio previsto de la representación adjunta sea desconocido para el remitente. Si no hay un campo de encabezado Content-Type, el destinatario PUEDE asumir un tipo de medio de "application/octet-stream" o examinar los datos para determinar su tipo.
+
+En la práctica, los propietarios de recursos no siempre configuran correctamente su servidor de origen para proporcionar el tipo de contenido correcto para una representación dada. Algunos agentes de usuario examinan el contenido y, en ciertos casos, anulan el tipo recibido. Este "sniffing MIME" corre el riesgo de sacar conclusiones incorrectas sobre los datos, lo que podría exponer al usuario a riesgos de seguridad adicionales (por ejemplo, "escalada de privilegios"). Además, los distintos tipos de medios a menudo comparten un formato de datos común, que difiere solo en cómo se pretende procesar los datos, lo que es imposible de distinguir inspeccionando solo los datos. Cuando se implementa el sniffing, se recomienda a los implementadores que proporcionen un medio para que el usuario lo deshabilite.
+
+Aunque Content-Type se define como un campo singleton, a veces se genera incorrectamente varias veces, lo que da como resultado un valor de campo combinado que parece una lista. Los destinatarios a menudo intentan manejar este error utilizando el último miembro sintácticamente válido de la lista, lo que genera posibles problemas de interoperabilidad y seguridad si las diferentes implementaciones tienen diferentes comportamientos de manejo de errores.
+
+>Tipo de medio
+
+HTTP utiliza tipos de medios en los campos de encabezado Content-Type y Accept para proporcionar una negociación de tipos y tipificación de datos abierta y extensible. Los tipos de medios definen tanto un formato de datos como varios modelos de procesamiento: cómo procesar esos datos de acuerdo con el contexto del mensaje.
+
+```
+media-type = type "/" subtype parameters
+type       = token
+subtype    = token
+```
+
+Los tokens de tipo y subtipo no distinguen entre mayúsculas y minúsculas.
+
+El tipo/subtipo PUEDE ir seguido de parámetros delimitados por punto y coma en forma de pares nombre/valor. La presencia o ausencia de un parámetro puede ser significativa para el procesamiento de un tipo de medio, dependiendo de su definición dentro del registro de tipo de medio. Los valores de los parámetros pueden o no distinguir entre mayúsculas y minúsculas, dependiendo de la semántica del nombre del parámetro.
+
+Por ejemplo, los siguientes tipos de medios son equivalentes a la hora de describir datos de texto HTML codificados en el esquema de codificación de caracteres UTF-8, pero se prefiere el primero por coherencia (el valor del parámetro "charset" se define como insensible a mayúsculas y minúsculas)
+
+```
+text/html;charset=utf-8
+Text/HTML;Charset="utf-8"
+text/html; charset="utf-8"
+text/html;charset=UTF-8
+```
+
+>Juego de carácteres
+
+HTTP utiliza nombres de "conjunto de caracteres" para indicar o negociar el esquema de codificación de caracteres de una representación textual. En los campos definidos por este documento, los nombres de conjuntos de caracteres aparecen en los parámetros (Content-Type) o, para Accept-Encoding, en forma de un token simple. En ambos casos, los nombres de conjuntos de caracteres se comparan sin distinguir entre mayúsculas y minúsculas.
+
+Nota: En teoría, los nombres de conjuntos de caracteres se definen mediante la regla ABNF "mime-charset".  Esa regla permite dos caracteres que no están incluidos en "token" ("{" y "}"), pero ningún nombre de conjunto de caracteres registrado al momento de escribir este artículo incluye llaves.
+
+>Tipos multiparte
+
+MIME proporciona una serie de tipos "multiparte": encapsulamientos de una o más representaciones dentro de un único cuerpo de mensaje. Todos los tipos multiparte comparten una sintaxis común, e incluyen un parámetro de límite como parte del valor del tipo de medio. El cuerpo del mensaje es en sí mismo un elemento de protocolo; un remitente DEBE generar solo CRLF para representar saltos de línea entre las partes del cuerpo.
+
+El enmarcado de mensajes HTTP no utiliza el límite multiparte como un indicador de la longitud del cuerpo del mensaje, aunque podría ser utilizado por implementaciones que generan o procesan el contenido. Por ejemplo, el tipo "multipart/form-data" se utiliza a menudo para llevar datos de formulario en una solicitud, y el tipo "multipart/byteranges" está definido por esta especificación para su uso en algunas respuestas 206 (Contenido parcial).
+
+>Content-Encoding
