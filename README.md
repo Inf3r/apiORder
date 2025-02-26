@@ -1426,3 +1426,36 @@ MIME proporciona una serie de tipos "multiparte": encapsulamientos de una o más
 El enmarcado de mensajes HTTP no utiliza el límite multiparte como un indicador de la longitud del cuerpo del mensaje, aunque podría ser utilizado por implementaciones que generan o procesan el contenido. Por ejemplo, el tipo "multipart/form-data" se utiliza a menudo para llevar datos de formulario en una solicitud, y el tipo "multipart/byteranges" está definido por esta especificación para su uso en algunas respuestas 206 (Contenido parcial).
 
 >Content-Encoding
+
+El campo de encabezado "Content-Encoding" indica qué codificaciones de contenido se han aplicado a la representación, más allá de las inherentes al tipo de medio, y por lo tanto qué mecanismos de decodificación se deben aplicar para obtener datos en el tipo de medio al que hace referencia el campo de encabezado Content-Type. Content-Encoding se utiliza principalmente para permitir que los datos de una representación se compriman sin perder la identidad de su tipo de medio subyacente.
+
+```
+Content-Encoding = #content-coding
+```
+
+Un ejemplo de su uso es
+
+```
+Content-Encoding: gzip
+```
+
+Si se han aplicado una o más codificaciones a una representación, el remitente que aplicó las codificaciones DEBE generar un campo de encabezado Content-Encoding que enumere las codificaciones de contenido en el orden en que se aplicaron. Tenga en cuenta que la codificación denominada "identity" está reservada para su función especial en Accept-Encoding y, por lo tanto, NO DEBE incluirse.
+
+Se puede proporcionar información adicional sobre los parámetros de codificación mediante otros campos de encabezado no definidos por esta especificación.
+
+A diferencia de la codificación de transferencia, las codificaciones que se enumeran en la codificación de contenido son una característica de la representación; la representación se define en términos de la forma codificada, y todos los demás metadatos sobre la representación se refieren a la forma codificada a menos que se indique lo contrario en la definición de metadatos. Normalmente, la representación solo se decodifica justo antes de la renderización o del uso análogo.
+
+Si el tipo de medio incluye una codificación inherente, como un formato de datos que siempre está comprimido, entonces esa codificación no se volvería a indicar en Content-Encoding incluso si resulta ser el mismo algoritmo que una de las codificaciones de contenido. Dicha codificación de contenido solo se incluiría si, por alguna extraña razón, se aplica una segunda vez para formar la representación. Del mismo modo, un servidor de origen puede optar por publicar los mismos datos como múltiples representaciones que difieren solo en si la codificación se define como parte de Content-Type o Content-Encoding, ya que algunos agentes de usuario se comportarán de manera diferente en su manejo de cada respuesta (por ejemplo, abrirán un cuadro de diálogo "Guardar como ..." en lugar de la descompresión y la representación automáticas del contenido).
+
+Un servidor de origen PUEDE responder con un código de estado 415 (Tipo de medio no compatible) si una representación en el mensaje de solicitud tiene una codificación de contenido que no es aceptable.
+
+>Content Codings
+
+Los valores de codificación de contenido indican una transformación de codificación que se ha aplicado o se puede aplicar a una representación. Las codificaciones de contenido se utilizan principalmente para permitir que una representación se comprima o transforme de otro modo de manera útil sin perder la identidad de su tipo de medio subyacente y sin pérdida de información. Con frecuencia, la representación se almacena en forma codificada, se transmite directamente y solo la decodifica el destinatario final.
+
+```
+content-coding   = token
+```
+
+Todos los códigos de contenido no distinguen entre mayúsculas y minúsculas y deben registrarse en el "Registro de codificación de contenido HTTP".
+
