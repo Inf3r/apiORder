@@ -1264,7 +1264,7 @@ La parte "recibido por" normalmente es el host y el número de puerto opcional d
 
 El remitente PUEDE generar comentarios para identificar el software de cada destinatario, de manera análoga a los campos de encabezado User-Agent y Server. Sin embargo, los comentarios en Via son opcionales y el destinatario PUEDE eliminarlos antes de reenviar el mensaje.
 
-Por ejemplo, un mensaje de solicitud podría enviarse desde un agente de usuario HTTP/1.0 a un proxy interno cuyo nombre en código es "fred", que utiliza HTTP/1.1 para reenviar la solicitud a un proxy público en p.example.net, que completa la solicitud reenviándola al servidor de origen en www.example.com. La solicitud recibida por www.example.com tendría entonces el siguiente campo de encabezado Via:
+Por ejemplo, un mensaje de solicitud podría enviarse desde un agente de usuario HTTP/1.0 a un proxy interno cuyo nombre en código es "fred", que utiliza HTTP/1.1 para reenviar la solicitud a un proxy público en ```p.example.net```, que completa la solicitud reenviándola al servidor de origen en ```www.example.com```. La solicitud recibida por ```www.example.com``` tendría entonces el siguiente campo de encabezado Via:
 
 ```
 Via: 1.0 fred, 1.1 p.example.net
