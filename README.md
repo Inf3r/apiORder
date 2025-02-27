@@ -1635,6 +1635,19 @@ Un servidor de origen sin un reloj NO DEBE generar una fecha de última modifica
 
 >Comparación
 
+Una hora de Última modificación, cuando se utiliza como validador en una solicitud, es implícitamente débil a menos que sea posible deducir que es fuerte, utilizando las siguientes reglas:
+
+* El validador está siendo comparado por un servidor de origen con el validador actual real para la representación y,
+* Ese servidor de origen sabe de manera confiable que la representación asociada no cambió dos veces durante el segundo cubierto por el validador presentado;
+
+o
+
+* El cliente va a utilizar el validador en un campo de encabezado If-Modified-Since, If-Unmodified-Since o If-Range, ya que el cliente tiene una entrada de caché para la representación asociada y
+* Esa entrada de caché incluye un valor de Fecha que es al menos un segundo posterior al valor de Última modificación y el cliente tiene motivos para creer que fueron generados por el mismo reloj o que hay suficiente diferencia entre los valores de Última modificación y Fecha para hacer que los problemas de sincronización del reloj sean poco probables.
+
+Este método se basa en el hecho de que si el servidor de origen envió dos respuestas diferentes durante el mismo segundo, pero ambas tenían la misma hora de última modificación, entonces al menos una de esas respuestas tendría un valor de Fecha igual a su hora de última modificación.
+
+>ETag
 
 
 
