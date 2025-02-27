@@ -1649,5 +1649,59 @@ Este método se basa en el hecho de que si el servidor de origen envió dos resp
 
 >ETag
 
+El campo "ETag" en una respuesta, proporciona la etiqueta de entidad actual para la representación seleccionada, tal como se determina al concluir el procesamiento de la solicitud. 
 
+Una etiqueta de entidad es un validador opaco para diferenciar entre múltiples representaciones del mismo recurso, independientemente de si esas múltiples representaciones se deben a cambios en el estado del recurso a lo largo del tiempo, a la negociación de contenido que da como resultado que múltiples representaciones sean válidas al mismo tiempo, o a ambos. Una etiqueta de entidad consiste en una cadena opaca entre comillas, posiblemente precedida por un indicador de debilidad.
 
+```
+ETag       = entity-tag
+
+entity-tag = [ weak ] opaque-tag
+weak       = %s"W/"
+opaque-tag = DQUOTE *etagc DQUOTE
+etagc      = %x21 / %x23-7E / obs-text
+           ; VCHAR except double quotes, plus obs-text
+```
+
+Nota: Anteriormente, opaque-tag se definía como una cadena entre comillas, por lo tanto, algunos destinatarios podrían realizar un anulación del escape de la barra invertida, lo que hace que los servidores deban evitar los caracteres de barra invertida en las etiquetas de entidad.
+
+Una etiqueta de entidad puede ser más confiable para la validación que una fecha de modificación en situaciones en las que es inconveniente almacenar fechas de modificación, donde la resolución de un segundo de los valores de fecha HTTP no es suficiente o donde las fechas de modificación no se mantienen de manera consistente.
+
+Ejemplos:
+
+```
+ETag: "xyzzy"
+ETag: W/"xyzzy"
+ETag: ""
+```
+
+Una etiqueta de entidad puede ser un validador débil o fuerte, siendo fuerte el valor predeterminado. Si un servidor de origen proporciona una etiqueta de entidad para una representación, y la generación de esa etiqueta de entidad no satisface todas las características de un validador fuerte, entonces el servidor de origen DEBE marcar la etiqueta de entidad como débil anteponiendo su valor opaco con "W/" (distinguible entre mayúsculas y minúsculas).
+
+Un remitente PUEDE enviar el campo ETag en una sección de tráiler. Sin embargo, dado que los tráileres a menudo se ignoran, es preferible enviar ETag como un campo de encabezado a menos que la etiqueta de entidad se genere mientras se envía el contenido.
+
+>Generación
+
+El principio detrás de las etiquetas de entidad es que solo el autor del servicio conoce la implementación de un recurso lo suficientemente bien como para seleccionar el mecanismo de validación más preciso y eficiente para ese recurso, y que cualquier mecanismo de ese tipo se puede asignar a una secuencia simple de octetos para una comparación sencilla. Dado que el valor es opaco, no es necesario que el cliente sepa cómo se construye cada etiqueta de entidad.
+
+Por ejemplo, un recurso que tiene una versión específica de la implementación aplicada a todos los cambios podría usar un número de revisión interno, quizás combinado con un identificador de variación para la negociación de contenido, para diferenciar con precisión entre representaciones. Otras implementaciones podrían usar un hash resistente a colisiones del contenido de la representación, una combinación de varios atributos de archivo o una marca de tiempo de modificación que tenga una resolución inferior a un segundo.
+
+Un servidor de origen DEBE enviar una ETag para cualquier representación seleccionada, para la cual se pueda determinar de manera razonable y consistente la detección de cambios, ya que el uso de la etiqueta de entidad en solicitudes condicionales y la evaluación de la frescura de la caché, puede reducir sustancialmente transferencias innecesarias y mejorar significativamente la disponibilidad, escalabilidad y confiabilidad del servicio.
+
+>Comparación
+
+Existen dos funciones de comparación de etiquetas de entidad, dependiendo de si el contexto de comparación permite o no el uso de validadores débiles:
+
+* "Comparación fuerte":
+dos etiquetas de entidad son equivalentes si ambas no son débiles y sus etiquetas opacas coinciden carácter por carácter.
+* "Comparación débil":
+dos etiquetas de entidad son equivalentes si sus etiquetas opacas coinciden carácter por carácter, independientemente de que una o ambas estén etiquetadas como "débiles".
+
+El siguiente ejemplo muestra los resultados para un conjunto de pares de etiquetas de entidad y los resultados de la función de comparación fuerte y débil:
+
+```
+ETag 1	ETag 2	Strong Comparison	Weak Comparison
+W/"1"	W/"1"	no match	match
+W/"1"	W/"2"	no match	no match
+W/"1"	"1"	no match	match
+"1"	"1"	match	match
+```
