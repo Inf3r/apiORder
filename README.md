@@ -1607,4 +1607,34 @@ De la misma manera, un validador es débil si es compartido por dos o más repre
 
 Los validadores fuertes se pueden usar para todas las solicitudes condicionales, incluidas la validación de caché, los rangos de contenido parcial y la prevención de "actualizaciones perdidas". Los validadores débiles solo se pueden usar cuando el cliente no requiere una igualdad exacta con los datos de representación obtenidos previamente, como cuando se valida una entrada de caché o se limita un recorrido web a cambios recientes.
 
+>Last-Modified
+
+El campo de encabezado Last-Modified en una respuesta, proporciona una marca de tiempo que indica la fecha y la hora en que el servidor de origen cree que la representación seleccionada se modificó por última vez, según lo determinado al concluir el procesamiento de la solicitud.
+
+```
+Last-Modified = HTTP-date
+```
+
+Un ejemplo es
+
+```
+Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+```
+
+>Generación
+
+Un servidor de origen DEBERÍA enviar Last-Modified para cualquier representación seleccionada para la cual se pueda determinar de manera razonable y consistente una fecha de última modificación, ya que su uso en solicitudes condicionales y la evaluación de la frescura de la memoria caché puede reducir sustancialmente las transferencias innecesarias y mejorar significativamente la disponibilidad y la escalabilidad del servicio.
+
+Una representación es típicamente la suma de muchas partes detrás de la interfaz de recursos. La hora de la última modificación normalmente sería la hora más reciente en que se modificó cualquiera de esas partes. La forma de algoritmo en que se determina ese valor para cualquier recurso dado es un detalle de implementación que está fuera del alcance de esta especificación.
+
+Un servidor de origen DEBERÍA obtener el valor de Última modificación de la representación lo más cerca posible del momento en que genera el valor del campo Fecha para su respuesta. Esto permite que un destinatario haga una evaluación precisa del momento de modificación de la representación, especialmente si la representación cambia cerca del momento en que se genera la respuesta.
+
+Un servidor de origen con un reloj NO DEBE generar una fecha de Última modificación que sea posterior a la hora de origen del mensaje del servidor. Si la hora de la última modificación se deriva de metadatos específicos de la implementación que evalúan algún momento en el futuro, según el reloj del servidor de origen, entonces el servidor de origen DEBE reemplazar ese valor con la fecha de origen del mensaje. Esto evita que una fecha de modificación futura tenga un impacto adverso en la validación de la memoria caché.
+
+Un servidor de origen sin un reloj NO DEBE generar una fecha de última modificación para una respuesta, a menos que ese valor de fecha haya sido asignado al recurso por algún otro sistema (presumiblemente uno con un reloj).
+
+>Comparación
+
+
+
 
