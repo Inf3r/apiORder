@@ -1699,7 +1699,7 @@ dos etiquetas de entidad son equivalentes si sus etiquetas opacas coinciden car�
 El siguiente ejemplo muestra los resultados para un conjunto de pares de etiquetas de entidad y los resultados de la función de comparación fuerte y débil:
 
 ```
-ETag 1	ETag 2	Strong Comparison Weak Comparison
+ETag 1	ETag 2	Strong Comparison   Weak Comparison
 W/"1"	W/"1"	no match	    match
 W/"1"	W/"2"	no match	    no match
 W/"1"	"1"	no match	    match
