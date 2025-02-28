@@ -1774,13 +1774,17 @@ A diferencia de los objetos distribuidos, los métodos de solicitud estandarizad
 Esta especificación define una serie de métodos estandarizados que se utilizan comúnmente en HTTP, como se describe en la siguiente tabla.
 
 ```
-Method Name	Description	Section
-GET	Transfer a current representation of the target resource.	9.3.1
-HEAD	Same as GET, but do not transfer the response content.	9.3.2
-POST	Perform resource-specific processing on the request content.	9.3.3
-PUT	Replace all current representations of the target resource with the request content.	9.3.4
-DELETE	Remove all current representations of the target resource.	9.3.5
-CONNECT	Establish a tunnel to the server identified by the target resource.	9.3.6
-OPTIONS	Describe the communication options for the target resource.	9.3.7
-TRACE	Perform a message loop-back test along the path to the target resource.	9.3.8
+Method Name	Description	
+GET	Transfer a current representation of the target resource.	
+HEAD	Same as GET, but do not transfer the response content.	
+POST	Perform resource-specific processing on the request content.	
+PUT	Replace all current representations of the target resource with the request content.	
+DELETE	Remove all current representations of the target resource.	
+CONNECT	Establish a tunnel to the server identified by the target resource.	
+OPTIONS	Describe the communication options for the target resource.	
+TRACE	Perform a message loop-back test along the path to the target resource.	
 ```
+
+Todos los servidores de propósito general DEBEN admitir los métodos GET y HEAD. Todos los demás métodos son OPCIONALES.¶
+
+El conjunto de métodos permitidos por un recurso de destino se puede incluir en un campo de encabezado Permitir (Sección 10.2.1). Sin embargo, el conjunto de métodos permitidos puede cambiar de forma dinámica. Un servidor de origen que recibe un método de solicitud que no se reconoce o no se implementa DEBE responder con el código de estado 501 (No implementado). Un servidor de origen que recibe un método de solicitud que se reconoce e implementa, pero no se permite para el recurso de destino, DEBE responder con el código de estado 405 (Método no permitido).
