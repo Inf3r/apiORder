@@ -1710,7 +1710,7 @@ Ejemplo: Etiquetas de entidad que varían según los recursos negociados por con
 
 Considerar un recurso que está sujeto a la negociación de contenido, y donde las representaciones enviadas en respuesta a una solicitud GET varían según el campo de encabezado de solicitud Accept-Encoding.
 
-* >> Solicitud:
+* Solicitud:
 
 ```
 GET /index HTTP/1.1
@@ -1720,7 +1720,7 @@ Accept-Encoding: gzip
 
 En este caso, la respuesta podría o no utilizar la codificación de contenido gzip. Si no lo hace, la respuesta podría verse así:
 
-* >> Respuesta:
+* Respuesta:
 
 ```
 HTTP/1.1 200 OK
@@ -1739,7 +1739,7 @@ Hello World!
 
 Una representación alternativa que utiliza codificación de contenido gzip sería:
 
-* >> Respuesta:
+* Respuesta:
 
 ```
 HTTP/1.1 200 OK
@@ -1756,5 +1756,4 @@ Content-Encoding: gzip
 Nota: Las codificaciones de contenido son una propiedad de los datos de representación, por lo que una etiqueta de entidad fuerte para una representación codificada por contenido tiene que ser distinta de la etiqueta de entidad de una representación no codificada para evitar posibles conflictos durante las actualizaciones de caché y las solicitudes de rango. Por el contrario, las codificaciones de transferencia se aplican solo durante la transferencia de mensajes y no dan como resultado etiquetas de entidad distintas.
 
 >Métodos
-
 
