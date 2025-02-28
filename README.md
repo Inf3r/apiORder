@@ -1710,7 +1710,7 @@ Ejemplo: Etiquetas de entidad que varían según los recursos negociados por con
 
 Considerar un recurso que está sujeto a la negociación de contenido, y donde las representaciones enviadas en respuesta a una solicitud GET varían según el campo de encabezado de solicitud Accept-Encoding.
 
-* Solicitud:
+**Solicitud:**
 
 ```
 GET /index HTTP/1.1
@@ -1720,7 +1720,7 @@ Accept-Encoding: gzip
 
 En este caso, la respuesta podría o no utilizar la codificación de contenido gzip. Si no lo hace, la respuesta podría verse así:
 
-* Respuesta:
+**Respuesta:**
 
 ```
 HTTP/1.1 200 OK
@@ -1739,7 +1739,7 @@ Hello World!
 
 Una representación alternativa que utiliza codificación de contenido gzip sería:
 
-* Respuesta:
+**Respuesta:**
 
 ```
 HTTP/1.1 200 OK
@@ -1757,3 +1757,30 @@ Nota: Las codificaciones de contenido son una propiedad de los datos de represen
 
 >Métodos
 
+El token del método de solicitud es la fuente principal de la semántica de la solicitud; indica el propósito por el cual el cliente ha realizado esta solicitud y lo que el cliente espera como resultado exitoso.
+
+La semántica del método de solicitud puede especializarse aún más mediante la semántica de algunos campos de encabezado cuando están presentes en una solicitud, si esas semánticas adicionales no entran en conflicto con el método. Por ejemplo, un cliente puede enviar campos de encabezado de solicitud condicionales para que la acción solicitada esté condicionada al estado actual del recurso de destino.
+
+HTTP está diseñado para ser utilizado como una interfaz para sistemas de objetos distribuidos. El método de solicitud invoca una acción que se aplicará a un recurso de destino de la misma manera que se puede enviar una invocación de método remoto a un objeto identificado.
+
+```
+method = token
+```
+
+El token de método distingue entre mayúsculas y minúsculas porque puede usarse como puerta de enlace a sistemas basados en objetos con nombres de método que distinguen entre mayúsculas y minúsculas. Por convención, los métodos estandarizados se definen en letras US-ASCII en mayúsculas.¶
+
+A diferencia de los objetos distribuidos, los métodos de solicitud estandarizados en HTTP no son específicos de los recursos, ya que las interfaces uniformes proporcionan una mejor visibilidad y reutilización en sistemas basados en red [REST]. Una vez definido, un método estandarizado debe tener la misma semántica cuando se aplica a cualquier recurso, aunque cada recurso determina por sí mismo si esa semántica se implementa o se permite.
+
+Esta especificación define una serie de métodos estandarizados que se utilizan comúnmente en HTTP, como se describe en la siguiente tabla.
+
+```
+Method Name	Description	Section
+GET	Transfer a current representation of the target resource.	9.3.1
+HEAD	Same as GET, but do not transfer the response content.	9.3.2
+POST	Perform resource-specific processing on the request content.	9.3.3
+PUT	Replace all current representations of the target resource with the request content.	9.3.4
+DELETE	Remove all current representations of the target resource.	9.3.5
+CONNECT	Establish a tunnel to the server identified by the target resource.	9.3.6
+OPTIONS	Describe the communication options for the target resource.	9.3.7
+TRACE	Perform a message loop-back test along the path to the target resource.	9.3.8
+```
