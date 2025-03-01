@@ -1774,15 +1774,15 @@ A diferencia de los objetos distribuidos, los métodos de solicitud estandarizad
 Esta especificación define una serie de métodos estandarizados que se utilizan comúnmente en HTTP, como se describe en la siguiente tabla.
 
 ```
-Method Name	Description	
-GET	Transfer a current representation of the target resource.	
-HEAD	Same as GET, but do not transfer the response content.	
-POST	Perform resource-specific processing on the request content.	
-PUT	Replace all current representations of the target resource with the request content.	
-DELETE	Remove all current representations of the target resource.	
-CONNECT	Establish a tunnel to the server identified by the target resource.	
-OPTIONS	Describe the communication options for the target resource.	
-TRACE	Perform a message loop-back test along the path to the target resource.	
+Método	Descripción	
+GET	Transfiere una representación actual del recurso de destino. 	
+HEAD	Igual que GET, pero no transfiere el contenido de la respuesta.	
+POST	Realiza un procesamiento específico del recurso en el contenido de la solicitud.
+PUT	Reemplaza todas las representaciones actuales del recurso de destino con el contenido de la solicitud.
+DELETE	Elimina todas las representaciones actuales del recurso de destino.	
+CONNECT	Establece un túnel al servidor identificado por el recurso de destino.
+OPTIONS	Describe las opciones de comunicación para el recurso de destino.
+TRACE	Realiza una prueba de bucle de retorno de mensajes a lo largo de la ruta al recurso de destino.	
 ```
 
 Todos los servidores de propósito general DEBEN admitir los métodos GET y HEAD. Todos los demás métodos son OPCIONALES.¶
