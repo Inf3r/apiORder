@@ -119,28 +119,26 @@ Aunque el diagrama es lineal, cada participante puede estar involucrado en múlt
 
 Los términos "ascendente" y "descendente" se utilizan para describir los requisitos direccionales en relación con el flujo de mensajes: todos los mensajes fluyen desde el flujo ascendente al descendente. Los términos "entrante" y "saliente" se utilizan para describir los requisitos direccionales en relación con la ruta de la solicitud: entrante significa "hacia el servidor de origen (O)", mientras que saliente significa "hacia el agente de usuario (UA)".
 
+Un "proxy" es un agente de reenvío de mensajes que el cliente elige, generalmente a través de reglas de configuración locales, para recibir solicitudes de algún tipo de URI absoluta e intentar satisfacer esas solicitudes mediante la traducción a través de la interfaz HTTP.
+Un proxy transparente actúa como intermediario entre el usuario y el sitio web de manera arbitraria, con o sin el consentimiento del cliente y/o servidor.
 
-* Un "proxy" es un agente de reenvío de mensajes que el cliente elige, generalmente a través de reglas de configuración locales, para recibir solicitudes de algún tipo de URI absoluta e intentar satisfacer esas solicitudes mediante la traducción a través de la interfaz HTTP.
-
-* Un proxy transparente actúa como intermediario entre el usuario y el sitio web de manera arbitraria, con o sin el consentimiento del cliente y/o servidor.
-
-* Proxy transparente
+**Proxy transparente**
 </p>
-Actúa como servidor entre el usuario y el sitio web
-No modifica las solicitudes
-No oculta la dirección IP real del origen
-Se utiliza para recuperar sitios web más rápidamente
+* Actúa como servidor entre el usuario y el sitio web
+* No modifica las solicitudes
+* No oculta la dirección IP real del origen
+* Se utiliza para recuperar sitios web más rápidamente
 
 Un "Gateway" (también conocido como "Proxy inverso") es un intermediario que actúa como un servidor de origen para la conexión saliente, pero traduce las solicitudes recibidas y las reenvía a otro servidor o servidores. Los gateways se utilizan a menudo para encapsular servicios de información heredados o no confiables, para mejorar el rendimiento del servidor a través del almacenamiento en caché "acelerador", y para permitir la partición o el equilibrio de carga de los servicios HTTP en varias máquinas.
 
-* Proxy inverso / Gateway
+**Proxy inverso / Gateway**
 </p>
-Se sitúa delante de los servidores web
-Intercepta las solicitudes de los clientes
-Enruta las solicitudes entrantes al servidor backend apropiado
-Devuelve la respuesta del servidor al cliente
-Es ideal para el equilibrio de carga, el cifrado SSL y el almacenamiento en caché
-Sirve como punto de entrada único a una serie de servicios distribuidos e independientes
+* Se sitúa delante de los servidores web
+* Intercepta las solicitudes de los clientes
+* Enruta las solicitudes entrantes al servidor backend apropiado
+* Devuelve la respuesta del servidor al cliente
+* Es ideal para el equilibrio de carga, el cifrado SSL y el almacenamiento en caché
+* Sirve como punto de entrada único a una serie de servicios distribuidos e independientes
 
 Algunas traducciones son mínimas, como las solicitudes de proxy para URI "http", mientras que otras solicitudes pueden requerir la traducción hacia y desde protocolos de nivel de aplicación completamente diferentes. Los proxies se utilizan a menudo para agrupar las solicitudes HTTP de una organización a través de un intermediario común para fines de servicios de seguridad, servicios de anotación, o almacenamiento en caché compartido.
 
