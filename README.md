@@ -124,6 +124,7 @@ Un proxy transparente actúa como intermediario entre el usuario y el sitio web 
 
 **Proxy transparente**
 </p>
+
 * Actúa como servidor entre el usuario y el sitio web
 * No modifica las solicitudes
 * No oculta la dirección IP real del origen
@@ -133,6 +134,7 @@ Un "Gateway" (también conocido como "Proxy inverso") es un intermediario que ac
 
 **Proxy inverso / Gateway**
 </p>
+
 * Se sitúa delante de los servidores web
 * Intercepta las solicitudes de los clientes
 * Enruta las solicitudes entrantes al servidor backend apropiado
