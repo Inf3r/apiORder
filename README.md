@@ -1045,7 +1045,7 @@ De lo contrario, HTTP no identifica el contenido, pero es posible que se proporc
 
 Los campos que se encuentran dentro de una "sección de trailer" se denominan "campos de trailers" (o simplemente "trailers", coloquialmente). Los campos de trailers pueden resultar útiles para proporcionar comprobaciones de integridad de mensajes, firmas digitales, métricas de entrega o información de estado de posprocesamiento. Estos, deben procesarse y almacenarse por separado de los campos de la sección del encabezado para evitar contradecir la semántica del mensaje conocida en el momento en que se completó la sección del encabezado. La presencia o ausencia de ciertos campos de encabezado podría afectar las decisiones tomadas para el enrutamiento o procesamiento del mensaje en su conjunto antes de recibir los avances; esas elecciones no pueden deshacerse con el descubrimiento posterior de campos de trailers.
 
->Limitaciones en el uso de remolques
+>Limitaciones en el uso
 
 Una sección de trailer solo es posible cuando la admite la versión de HTTP en uso y está habilitada por un mecanismo de encuadre explícito. Por ejemplo, la codificación de transferencia fragmentada en HTTP/1.1 permite enviar una sección de avance después del contenido.
 
