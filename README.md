@@ -124,7 +124,8 @@ Los términos "ascendente" y "descendente" se utilizan para describir los requis
 
 * Un proxy transparente actúa como intermediario entre el usuario y el sitio web de manera arbitraria, con o sin el consentimiento del cliente y/o servidor.
 
-* Proxy transparente 
+* Proxy transparente
+</p>
 Actúa como servidor entre el usuario y el sitio web
 No modifica las solicitudes
 No oculta la dirección IP real del origen
@@ -132,7 +133,8 @@ Se utiliza para recuperar sitios web más rápidamente
 
 Un "Gateway" (también conocido como "Proxy inverso") es un intermediario que actúa como un servidor de origen para la conexión saliente, pero traduce las solicitudes recibidas y las reenvía a otro servidor o servidores. Los gateways se utilizan a menudo para encapsular servicios de información heredados o no confiables, para mejorar el rendimiento del servidor a través del almacenamiento en caché "acelerador", y para permitir la partición o el equilibrio de carga de los servicios HTTP en varias máquinas.
 
-* Proxy inverso / Gateway (son lo mismo)
+* Proxy inverso / Gateway
+</p>
 Se sitúa delante de los servidores web
 Intercepta las solicitudes de los clientes
 Enruta las solicitudes entrantes al servidor backend apropiado
