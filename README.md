@@ -120,9 +120,12 @@ Aunque el diagrama es lineal, cada participante puede estar involucrado en múlt
 Los términos "ascendente" y "descendente" se utilizan para describir los requisitos direccionales en relación con el flujo de mensajes: todos los mensajes fluyen desde el flujo ascendente al descendente. Los términos "entrante" y "saliente" se utilizan para describir los requisitos direccionales en relación con la ruta de la solicitud: entrante significa "hacia el servidor de origen (O)", mientras que saliente significa "hacia el agente de usuario (UA)".
 
 Un "proxy" es un agente de reenvío de mensajes que el cliente elige, generalmente a través de reglas de configuración locales, para recibir solicitudes de algún tipo de URI absoluta e intentar satisfacer esas solicitudes mediante la traducción a través de la interfaz HTTP.
+
 Un proxy transparente actúa como intermediario entre el usuario y el sitio web de manera arbitraria, con o sin el consentimiento del cliente y/o servidor.
 
-**Proxy transparente**
+Un proxy de interceptación filtra o redirige los paquetes salientes del puerto TCP 80 (y ocasionalmente el tráfico de otros puertos comunes). Los proxies de interceptación se encuentran comúnmente en puntos de acceso de redes públicas, como un medio para hacer cumplir la suscripción de cuentas antes de permitir el uso de servicios de Internet no locales, y dentro de los firewalls corporativos para hacer cumplir las políticas de uso de la red.
+
+**Proxy transparente / Interceptación**
 </p>
 
 * Actúa como servidor entre el usuario y el sitio web
@@ -136,11 +139,13 @@ Un "Gateway" (también conocido como "Proxy inverso") es un intermediario que ac
 </p>
 
 * Se sitúa delante de los servidores web
+* Protege la verdadera identidad del servidor
 * Intercepta las solicitudes de los clientes
 * Enruta las solicitudes entrantes al servidor backend apropiado
 * Devuelve la respuesta del servidor al cliente
 * Es ideal para el equilibrio de carga, el cifrado SSL y el almacenamiento en caché
 * Sirve como punto de entrada único a una serie de servicios distribuidos e independientes
+* Sirve como gran medida para capa de comunicación segura
 
 Algunas traducciones son mínimas, como las solicitudes de proxy para URI "http", mientras que otras solicitudes pueden requerir la traducción hacia y desde protocolos de nivel de aplicación completamente diferentes. Los proxies se utilizan a menudo para agrupar las solicitudes HTTP de una organización a través de un intermediario común para fines de servicios de seguridad, servicios de anotación, o almacenamiento en caché compartido.
 
@@ -154,7 +159,7 @@ Un túnel deja de existir cuando ambos extremos de la conexión retransmitida se
 
 Las categorías anteriores de intermediarios solo consideran a aquellos que actúan como participantes en la comunicación HTTP. También hay intermediarios que pueden actuar en capas inferiores de la pila de protocolos de red, filtrando o redirigiendo el tráfico sin el conocimiento o permiso de los remitentes de los mensajes. Los intermediarios de red son indistinguibles (a nivel de protocolo) de un atacante en ruta, y a menudo introducen fallas de seguridad o problemas de interoperabilidad debido a la violación por error de la semántica HTTP.
 
-Por ejemplo, un "proxy de interceptación" (también conocido comúnmente como "proxy transparente") se diferencia de un proxy HTTP porque no es elegido por el cliente. En cambio, un proxy de interceptación filtra o redirige los paquetes salientes del puerto TCP 80 (y ocasionalmente el tráfico de otros puertos comunes). Los proxies de interceptación se encuentran comúnmente en puntos de acceso de redes públicas, como un medio para hacer cumplir la suscripción de cuentas antes de permitir el uso de servicios de Internet no locales, y dentro de los firewalls corporativos para hacer cumplir las políticas de uso de la red.
+Por ejemplo, un "proxy de interceptación" (también conocido comúnmente como "proxy transparente") se diferencia de un proxy HTTP porque no es elegido por el cliente. En cambio, 
 
 >Cachés
 
