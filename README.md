@@ -4,7 +4,7 @@
 <sub>Todo</sub> sobre <sup>HTTP</sup>./
 </p>
 
-![HTPlanet!](/main/Screenshot_2025-03-03-00-24-43-684_com.whatsapp.jpg)
+![HTPlanet!](/Screenshot_2025-03-03-00-24-43-684_com.whatsapp.jpg)
 
 >RFC9110
 
