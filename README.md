@@ -1105,7 +1105,7 @@ El campo de encabezado "Trailer" proporciona una lista de nombres de campos que 
 Trailer = #field-name
 ```
 
-Por ejemplo, un remitente puede indicar que se calculará una firma a medida que se transmite el contenido, y proporcionar la firma final como un campo de tráiler. Esto permite que un destinatario realice la misma verificación sobre la marcha mientras recibe el contenido.¶
+Por ejemplo, un remitente puede indicar que se calculará una firma a medida que se transmite el contenido, y proporcionar la firma final como un campo de tráiler. Esto permite que un destinatario realice la misma verificación sobre la marcha mientras recibe el contenido.
 
 Un remitente que pretende generar uno o más campos de tráiler en un mensaje DEBERÍA generar un campo de encabezado de tráiler en la sección de encabezado de ese mensaje para indicar qué campos podrían estar presentes en los tráileres.
 
