@@ -1795,7 +1795,7 @@ HTTP está diseñado para ser utilizado como una interfaz para sistemas de objet
 method = token
 ```
 
-El token de método distingue entre mayúsculas y minúsculas porque puede usarse como puerta de enlace a sistemas basados en objetos con nombres de método que distinguen entre mayúsculas y minúsculas. Por convención, los métodos estandarizados se definen en letras US-ASCII en mayúsculas.¶
+El token de método distingue entre mayúsculas y minúsculas porque puede usarse como puerta de enlace a sistemas basados en objetos con nombres de método que distinguen entre mayúsculas y minúsculas. Por convención, los métodos estandarizados se definen en letras US-ASCII en mayúsculas.
 
 A diferencia de los objetos distribuidos, los métodos de solicitud estandarizados en HTTP no son específicos de los recursos, ya que las interfaces uniformes proporcionan una mejor visibilidad y reutilización en sistemas basados en red [REST]. Una vez definido, un método estandarizado debe tener la misma semántica cuando se aplica a cualquier recurso, aunque cada recurso determina por sí mismo si esa semántica se implementa o se permite.
 
@@ -1813,6 +1813,27 @@ OPTIONS	Describe las opciones de comunicación para el recurso de destino.
 TRACE	Realiza una prueba de bucle de retorno de mensajes a lo largo de la ruta al recurso de destino.	
 ```
 
-Todos los servidores de propósito general DEBEN admitir los métodos GET y HEAD. Todos los demás métodos son OPCIONALES.¶
+Todos los servidores de propósito general DEBEN admitir los métodos GET y HEAD. Todos los demás métodos son OPCIONALES.
 
-El conjunto de métodos permitidos por un recurso de destino se puede incluir en un campo de encabezado Permitir (Sección 10.2.1). Sin embargo, el conjunto de métodos permitidos puede cambiar de forma dinámica. Un servidor de origen que recibe un método de solicitud que no se reconoce o no se implementa DEBE responder con el código de estado 501 (No implementado). Un servidor de origen que recibe un método de solicitud que se reconoce e implementa, pero no se permite para el recurso de destino, DEBE responder con el código de estado 405 (Método no permitido).
+El conjunto de métodos permitidos por un recurso de destino se puede incluir en un campo de encabezado Allow. Sin embargo, el conjunto de métodos permitidos puede cambiar de forma dinámica. Un servidor de origen que recibe un método de solicitud que no se reconoce o no se implementa DEBE responder con el código de estado 501 (No implementado). Un servidor de origen que recibe un método de solicitud que se reconoce e implementa, pero no se permite para el recurso de destino, DEBE responder con el código de estado 405 (Método no permitido).
+
+Se especificaron métodos adicionales, que quedan fuera del alcance de esta especificación, para su uso en HTTP. Todos estos métodos deben registrarse en el "Registro de métodos del Protocolo de transferencia de hipertexto (HTTP)".
+
+>Propiedades de métodos comunes
+
+**Método seguro:**
+
+Los métodos de solicitud se consideran "seguros" si su semántica definida es esencialmente de solo lectura; es decir, el cliente no solicita, ni espera, ningún cambio de estado en el servidor de origen como resultado de la aplicación de un método seguro a un recurso de destino. Asimismo, no se espera que el uso razonable de un método seguro cause ningún daño, pérdida de propiedad o carga inusual en el servidor de origen.
+
+Esta definición de métodos seguros no impide que una implementación incluya un comportamiento que sea potencialmente dañino, que no sea completamente de solo lectura o que cause efectos secundarios al invocar un método seguro. Sin embargo, lo que es importante, es que el cliente no solicitó ese comportamiento adicional y no puede ser considerado responsable por él. Por ejemplo, la mayoría de los servidores agregan información de solicitud a los archivos de registro de acceso al completar cada respuesta, independientemente del método, y eso se considera seguro aunque el almacenamiento de registros pueda llenarse y hacer que el servidor falle. Asimismo, una solicitud segura iniciada al seleccionar un anuncio en la Web a menudo tendrá el efecto secundario de cobrar una cuenta de publicidad.
+
+De los métodos de solicitud definidos por esta especificación, los métodos GET, HEAD, OPTIONS y TRACE están definidos como seguros.
+
+El objetivo de distinguir entre métodos seguros e inseguros es permitir que los procesos de recuperación automática (arañas) y la optimización del rendimiento de la memoria caché (precarga) funcionen sin temor a causar daños. Además, permite que un agente de usuario aplique restricciones adecuadas al uso automático de métodos inseguros al procesar contenido potencialmente no confiable.
+
+Un agente de usuario DEBE distinguir entre métodos seguros e inseguros al presentar acciones potenciales a un usuario, de modo que el usuario pueda ser consciente de una acción insegura antes de que se solicite.
+
+Cuando se construye un recurso de modo que los parámetros dentro del URI de destino tengan el efecto de seleccionar una acción, es responsabilidad del propietario del recurso garantizar que la acción sea coherente con la semántica del método de solicitud. Por ejemplo, es común que el software de edición de contenido basado en la Web utilice acciones dentro de los parámetros de consulta, como "page?do=delete". Si el propósito de un recurso de este tipo es realizar una acción insegura, entonces el propietario del recurso DEBE deshabilitar o prohibir esa acción cuando se accede a él mediante un método de solicitud seguro. Si no se hace esto, se producirán efectos secundarios desafortunados cuando los procesos automatizados realicen una operación GET en cada referencia URI con el fin de mantener el enlace, obtener información previamente, crear un índice de búsqueda, etc.
+
+**Método idempotente:**
+
