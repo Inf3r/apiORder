@@ -1691,7 +1691,7 @@ etagc      = %x21 / %x23-7E / obs-text
            ; VCHAR except double quotes, plus obs-text
 ```
 
-Nota: Anteriormente, opaque-tag se definía como una cadena entre comillas, por lo tanto, algunos destinatarios podrían realizar un anulación del escape de la barra invertida, lo que hace que los servidores deban evitar los caracteres de barra invertida en las etiquetas de entidad.
+Nota: Anteriormente, opaque-tag se definía como una cadena entre comillas, por lo tanto, algunos destinatarios podrían realizar la anulación del escape de la barra invertida, lo que hace que los servidores deban evitar los caracteres de barra invertida en las etiquetas de entidad.
 
 Una etiqueta de entidad puede ser más confiable para la validación que una fecha de modificación en situaciones en las que es inconveniente almacenar fechas de modificación, donde la resolución de un segundo de los valores de fecha HTTP no es suficiente o donde las fechas de modificación no se mantienen de manera consistente.
 
