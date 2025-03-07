@@ -1837,3 +1837,38 @@ Cuando se construye un recurso de modo que los parámetros dentro del URI de des
 
 **Método idempotente:**
 
+Un método de solicitud se considera "idempotente" si el efecto previsto en el servidor de varias solicitudes idénticas con ese método es el mismo que el efecto de una única solicitud de ese tipo. De los métodos de solicitud definidos por esta especificación, PUT, DELETE y los métodos de solicitud seguros son idempotentes.
+
+Al igual que la definición de seguro, la propiedad idempotente solo se aplica a lo que ha sido solicitado por el usuario; un servidor es libre de registrar cada solicitud por separado, conservar un historial de control de revisión o implementar otros efectos secundarios no idempotentes para cada solicitud idempotente.
+
+Los métodos idempotentes se distinguen porque la solicitud se puede repetir automáticamente si se produce un fallo de comunicación antes de que el cliente pueda leer la respuesta del servidor. Por ejemplo, si un cliente envía una solicitud PUT y la conexión subyacente se cierra antes de recibir una respuesta, entonces el cliente puede establecer una nueva conexión y volver a intentar la solicitud idempotente. Sabe que repetir la solicitud tendrá el mismo efecto previsto, incluso si la solicitud original tuvo éxito, aunque la respuesta puede ser diferente.
+
+Un cliente NO DEBE volver a intentar automáticamente una solicitud con un método no idempotente a menos que tenga algún medio para saber que la semántica de la solicitud es realmente idempotente, independientemente del método, o algún medio para detectar que la solicitud original nunca se aplicó.
+
+Por ejemplo, un agente de usuario puede repetir una solicitud POST automáticamente si sabe (a través del diseño o la configuración) que la solicitud es segura para ese recurso. De la misma manera, un agente de usuario diseñado específicamente para operar en un repositorio de control de versiones podría recuperarse de condiciones de falla parcial al verificar la(s) revisión(es) del recurso de destino después de una conexión fallida, revirtiendo o reparando cualquier cambio que se haya aplicado parcialmente y luego reintentando automáticamente las solicitudes que fallaron.
+
+Algunos clientes adoptan un enfoque más riesgoso e intentan adivinar cuándo es posible un reintento automático. Por ejemplo, un cliente podría reintentar automáticamente una solicitud POST si la conexión de transporte subyacente se cerró antes de que se reciba cualquier parte de una respuesta, en particular si se utilizó una conexión persistente inactiva.
+
+Un proxy NO DEBE reintentar automáticamente solicitudes no idempotentes. Un cliente NO DEBE reintentar automáticamente una solicitud automática fallida.
+
+>Métodos y almacenamiento en caché
+
+**GET:**
+
+El método GET solicita la transferencia de una representación seleccionada actual para el recurso de destino. Una respuesta exitosa refleja la calidad de "uniformidad" identificada por el URI de destino. Por lo tanto, la recuperación de información identificable a través de HTTP se realiza generalmente mediante una solicitud GET en un identificador asociado con el potencial de proporcionar esa información en una respuesta 200 (OK).
+
+GET es el mecanismo principal de recuperación de información y el foco de casi todas las optimizaciones de rendimiento. Las aplicaciones que generan un URI para cada recurso importante pueden beneficiarse de esas optimizaciones y, al mismo tiempo, permitir su reutilización por otras aplicaciones, lo que crea un efecto de red que promueve una mayor expansión de la Web.
+
+Es tentador pensar en los identificadores de recursos como rutas de acceso de sistemas de archivos remotos y en las representaciones como una copia del contenido de dichos archivos. De hecho, así es como se implementan muchos recursos. Sin embargo, en la práctica no existen tales limitaciones.
+
+Es igualmente probable que la interfaz HTTP para un recurso se implemente como un árbol de objetos de contenido, una vista programática de varios registros de bases de datos o una puerta de enlace a otros sistemas de información. Incluso cuando el mecanismo de mapeo de URI está vinculado a un sistema de archivos, un servidor de origen podría estar configurado para ejecutar los archivos con la solicitud como entrada y enviar la salida como representación en lugar de transferir los archivos directamente. En cualquier caso, solo el servidor de origen necesita saber cómo cada identificador de recurso corresponde a una implementación y cómo esa implementación logra seleccionar y enviar una representación actual del recurso de destino.
+
+Un cliente puede alterar la semántica de GET para que sea una "solicitud de rango", solicitando la transferencia de solo algunas partes de la representación seleccionada, enviando un campo de encabezado de rango en la solicitud.
+
+Aunque la estructuración del mensaje de solicitud es independiente del método utilizado, el contenido recibido en una solicitud GET no tiene una semántica definida de manera general, no puede alterar el significado o el objetivo de la solicitud y puede hacer que algunas implementaciones rechacen la solicitud y cierren la conexión debido a su potencial como ataque de contrabando de solicitudes. Un cliente NO DEBE generar contenido en una solicitud GET a menos que se realice directamente a un servidor de origen que haya indicado previamente, dentro o fuera de banda, que dicha solicitud tiene un propósito y será adecuadamente respaldada. Un servidor de origen NO DEBE depender de acuerdos privados para recibir contenido, ya que los participantes en la comunicación HTTP a menudo desconocen los intermediarios a lo largo de la cadena de solicitudes.
+
+La respuesta a una solicitud GET se puede almacenar en caché; una caché PUEDE utilizarla para satisfacer solicitudes GET y HEAD posteriores a menos que se indique lo contrario en el campo de encabezado Cache-Control.
+
+Cuando la recuperación de información se realiza con un mecanismo que construye un URI de destino a partir de información proporcionada por el usuario, como los campos de consulta de un formulario que utiliza GET, es posible que se proporcionen datos potencialmente confidenciales que no serían apropiados para su divulgación dentro de un URI. En algunos casos, los datos se pueden filtrar o transformar de modo que no revelen dicha información. En otros, en particular cuando no hay ningún beneficio en almacenar en caché una respuesta, el uso del método POST, en lugar de GET, puede transmitir dicha información en el contenido de la solicitud en lugar de dentro del URI de destino.
+
+**HEAD:**
